@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArchiCV | Modern Resume Builder</title>
+    <meta name="description"
+        content="Build a professional, modern CV in minutes with real-time preview and PDF export.">
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- html2pdf.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo">
+                <i data-lucide="file-text"></i>
+                <span>Archi<b>CV</b></span>
+            </div>
+            <div class="actions">
+                <button id="download-btn" class="btn btn-primary">
+                    <i data-lucide="download"></i>
+                    <span>Download PDF</span>
+                </button>
+            </div>
+        </header>
+
+        <main class="app-main">
+            <!-- Left Side: Form Inputs -->
+            <aside class="editor-pane">
+                <div class="editor-scroll">
+                    <form id="cv-form">
+                        <!-- Personal Info -->
+                        <section class="form-section">
+                            <h2 class="section-title"><i data-lucide="user"></i> Personal Details</h2>
+                            <div class="input-grid">
+                                <div class="field">
+                                    <label for="fullName">Full Name</label>
+                                    <input type="text" id="fullName" placeholder="John Doe">
+                                </div>
+                                <div class="field">
+                                    <label for="jobTitle">Job Title</label>
+                                    <input type="text" id="jobTitle" placeholder="Senior Product Designer">
+                                </div>
+                                <div class="field">
+                                    <label for="email">Email</label>
+                                    <input type="email" id="email" placeholder="john@example.com">
+                                </div>
+                                <div class="field">
+                                    <label for="phone">Phone</label>
+                                    <input type="tel" id="phone" placeholder="+1 (555) 123-4567">
+                                </div>
+                                <div class="field">
+                                    <label for="location">Location</label>
+                                    <input type="text" id="location" placeholder="New York, NY">
+                                </div>
+                                <div class="field">
+                                    <label for="linkedin">LinkedIn URL</label>
+                                    <input type="text" id="linkedin" placeholder="linkedin.com/in/johndoe">
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Summary -->
+                        <section class="form-section">
+                            <h2 class="section-title"><i data-lucide="align-left"></i> Professional Summary</h2>
+                            <div class="field">
+                                <textarea id="summary"
+                                    placeholder="Briefly describe your professional background and key achievements..."></textarea>
+                            </div>
+                        </section>
+
+                        <!-- Experience -->
+                        <section class="form-section" id="experience-section">
+                            <div class="section-header">
+                                <h2 class="section-title"><i data-lucide="briefcase"></i> Experience</h2>
+                                <button type="button" class="btn-add" id="add-experience">
+                                    <i data-lucide="plus-circle"></i> Add
+                                </button>
+                            </div>
+                            <div id="experience-list" class="dynamic-list">
+                                <!-- Experience items will be added here -->
+                            </div>
+                        </section>
+
+                        <!-- Education -->
+                        <section class="form-section" id="education-section">
+                            <div class="section-header">
+                                <h2 class="section-title"><i data-lucide="graduation-cap"></i> Education</h2>
+                                <button type="button" class="btn-add" id="add-education">
+                                    <i data-lucide="plus-circle"></i> Add
+                                </button>
+                            </div>
+                            <div id="education-list" class="dynamic-list">
+                                <!-- Education items will be added here -->
+                            </div>
+                        </section>
+
+                        <!-- Skills -->
+                        <section class="form-section" id="skills-section">
+                            <div class="section-header">
+                                <h2 class="section-title"><i data-lucide="award"></i> Skills</h2>
+                                <button type="button" class="btn-add" id="add-skill">
+                                    <i data-lucide="plus-circle"></i> Add
+                                </button>
+                            </div>
+                            <div id="skills-list" class="dynamic-list-chips">
+                                <!-- Skill chips will be added here -->
+                            </div>
+                        </section>
+
+                        <!-- Languages -->
+                        <section class="form-section">
+                            <h2 class="section-title"><i data-lucide="languages"></i> Languages</h2>
+                            <div class="field">
+                                <input type="text" id="languages"
+                                    placeholder="English (Native), French (Fluent), Spanish (Basic)">
+                            </div>
+                        </section>
+                    </form>
+                </div>
+            </aside>
+
+            <!-- Right Side: Live Preview -->
+            <section class="preview-pane">
+                <div class="preview-header">
+                    <span class="preview-badge">Live Preview</span>
+                    <div class="preview-zoom-info">Scaling to fit screen</div>
+                </div>
+                <div class="preview-container">
+                    <div id="cv-preview" class="cv-document">
+                        <!-- Top Bar / Header -->
+                        <div class="cv-header">
+                            <div class="header-left">
+                                <div class="profile-image-placeholder">
+                                    <i data-lucide="user"></i>
+                                </div>
+                                <div class="header-main">
+                                    <h1 id="preview-name">Your Name</h1>
+                                    <p id="preview-title" class="sub-title">Job Title</p>
+                                </div>
+                            </div>
+                            <div class="header-contact">
+                                <div id="preview-email-wrap" class="contact-item"><i data-lucide="mail"></i> <span
+                                        id="preview-email"></span></div>
+                                <div id="preview-phone-wrap" class="contact-item"><i data-lucide="phone"></i> <span
+                                        id="preview-phone"></span></div>
+                                <div id="preview-location-wrap" class="contact-item"><i data-lucide="map-pin"></i> <span
+                                        id="preview-location"></span></div>
+                                <div id="preview-linkedin-wrap" class="contact-item"><i data-lucide="linkedin"></i>
+                                    <span id="preview-linkedin"></span></div>
+                            </div>
+                        </div>
+
+                        <!-- Divider -->
+                        <div class="cv-divider"></div>
+
+                        <!-- Main Content -->
+                        <div class="cv-body">
+                            <!-- Left Column (Main) -->
+                            <div class="cv-col-main">
+                                <div class="cv-section" id="p-summary-sect">
+                                    <h3>Professional Summary</h3>
+                                    <p id="preview-summary">Write a compelling summary to catch the recruiter's eye...
+                                    </p>
+                                </div>
+
+                                <div class="cv-section" id="p-experience-sect">
+                                    <h3>Work Experience</h3>
+                                    <div id="preview-experience-list">
+                                        <!-- Experience items -->
+                                    </div>
+                                </div>
+
+                                <div class="cv-section" id="p-education-sect">
+                                    <h3>Education</h3>
+                                    <div id="preview-education-list">
+                                        <!-- Education items -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right Column (Sidebar) -->
+                            <div class="cv-col-side">
+                                <div class="cv-section" id="p-skills-sect">
+                                    <h3>Skills</h3>
+                                    <div id="preview-skills-list" class="skills-grid">
+                                        <!-- Skills items -->
+                                    </div>
+                                </div>
+
+                                <div class="cv-section" id="p-languages-sect">
+                                    <h3>Languages</h3>
+                                    <p id="preview-languages"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Templates for dynamic items (hidden) -->
+    <template id="experience-item-template">
+        <div class="dynamic-item" data-type="experience">
+            <div class="item-header">
+                <span class="item-label">Experience</span>
+                <button type="button" class="btn-remove"><i data-lucide="x"></i></button>
+            </div>
+            <div class="input-grid">
+                <input type="text" class="exp-title" placeholder="Job Title">
+                <input type="text" class="exp-company" placeholder="Company Name">
+                <input type="text" class="exp-dates" placeholder="Date (e.g., 2020 - Present)">
+                <textarea class="exp-desc" placeholder="Responsibilities and achievements..."></textarea>
+            </div>
+        </div>
+    </template>
+
+    <template id="education-item-template">
+        <div class="dynamic-item" data-type="education">
+            <div class="item-header">
+                <span class="item-label">Education</span>
+                <button type="button" class="btn-remove"><i data-lucide="x"></i></button>
+            </div>
+            <div class="input-grid">
+                <input type="text" class="edu-degree" placeholder="Degree / Certificate">
+                <input type="text" class="edu-school" placeholder="School / University">
+                <input type="text" class="edu-dates" placeholder="Date (e.g., 2016 - 2020)">
+            </div>
+        </div>
+    </template>
+
+    <template id="skill-item-template">
+        <div class="skill-input-wrap">
+            <input type="text" class="skill-name" placeholder="Skill (e.g., JavaScript)">
+            <button type="button" class="btn-remove-sm"><i data-lucide="x"></i></button>
+        </div>
+    </template>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,573 @@
+:root {
+    /* Color Palette - Modern & Professional */
+    --primary: #2563eb;
+    --primary-hover: #1d4ed8;
+    --secondary: #64748b;
+    --bg-app: #f1f5f9;
+    --bg-card: #ffffff;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --border: #e2e8f0;
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --radius: 12px;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg-app);
+    color: var(--text-main);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+
+.app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    min-width: 1200px;
+    overflow: hidden;
+}
+
+/* Header Styling */
+.app-header {
+    background-color: var(--bg-card);
+    padding: 0.75rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    z-index: 50;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.25rem;
+    color: var(--primary);
+    font-weight: 600;
+}
+
+.logo i {
+    width: 24px;
+    height: 24px;
+}
+
+.btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    border-radius: var(--radius);
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+.btn i {
+    width: 18px;
+    height: 18px;
+}
+
+/* Main Layout */
+.app-main {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 480px 1fr;
+    overflow: hidden;
+}
+
+/* Editor Pane (Left) */
+.editor-pane {
+    background-color: var(--bg-card);
+    border-right: 1px solid var(--border);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.editor-scroll {
+    padding: 2rem;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.editor-scroll::-webkit-scrollbar {
+    width: 6px;
+}
+
+.editor-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.editor-scroll::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+
+.form-section {
+    margin-bottom: 2.5rem;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.section-title {
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    color: var(--secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.section-header .section-title {
+    margin-bottom: 0;
+}
+
+.section-title i {
+    width: 20px;
+    height: 20px;
+    color: var(--primary);
+}
+
+.input-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.input-grid input[type="text"],
+.input-grid input[type="email"],
+.input-grid input[type="tel"],
+.input-grid textarea,
+#languages {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background-color: #f8fafc;
+    font-family: inherit;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+    outline: none;
+}
+
+#summary {
+    width: 100%;
+    min-height: 120px;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background-color: #f8fafc;
+    font-family: inherit;
+    font-size: 0.875rem;
+    resize: vertical;
+}
+
+.field label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 0.375rem;
+}
+
+input:focus,
+textarea:focus {
+    border-color: var(--primary);
+    background-color: white;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Dynamic Item Styling */
+.dynamic-item {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+    position: relative;
+    transition: all 0.2s;
+}
+
+.dynamic-item:hover {
+    border-color: #cbd5e1;
+    box-shadow: var(--shadow-sm);
+}
+
+.item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.item-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #94a3b8;
+}
+
+.btn-remove {
+    color: #ef4444;
+    cursor: pointer;
+    background: none;
+    border: none;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.btn-remove:hover {
+    opacity: 1;
+}
+
+.btn-add {
+    background: none;
+    border: none;
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    transition: transform 0.2s;
+}
+
+.btn-add:hover {
+    transform: scale(1.05);
+}
+
+/* Skill Chips Input */
+.dynamic-list-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.skill-input-wrap {
+    display: flex;
+    align-items: center;
+    background: #f1f5f9;
+    border-radius: 20px;
+    padding: 0.25rem 0.5rem 0.25rem 1rem;
+    border: 1px solid var(--border);
+}
+
+.skill-input-wrap input {
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 0.8125rem;
+    width: 100px;
+    font-weight: 500;
+}
+
+.btn-remove-sm {
+    background: none;
+    border: none;
+    color: #94a3b8;
+    cursor: pointer;
+    margin-left: 0.25rem;
+}
+
+.btn-remove-sm:hover {
+    color: #ef4444;
+}
+
+/* Preview Pane (Right) */
+.preview-pane {
+    background-color: var(--bg-app);
+    padding: 2.5rem;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.preview-header {
+    width: 100%;
+    max-width: 800px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.preview-badge {
+    background: rgba(37, 99, 235, 0.1);
+    color: var(--primary);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+}
+
+.preview-zoom-info {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.preview-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    padding-bottom: 5rem;
+}
+
+/* CV Document Styling (The A4 Paper) */
+.cv-document {
+    width: 210mm;
+    min-height: 297mm;
+    background: white;
+    padding: 40px;
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    display: flex;
+    flex-direction: column;
+    color: #334155;
+    font-family: 'Inter', sans-serif;
+    transform-origin: top center;
+    overflow: hidden;
+}
+
+/* Live scaling logic would be handled by JS or media queries if needed */
+
+.cv-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.profile-image-placeholder {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--border);
+    color: var(--secondary);
+}
+
+.profile-image-placeholder i {
+    width: 32px;
+    height: 32px;
+}
+
+.header-main h1 {
+    font-size: 36px;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    margin-bottom: 4px;
+}
+
+.header-main .sub-title {
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--primary);
+    letter-spacing: 0.01em;
+}
+
+.header-contact {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+    font-size: 13px;
+    color: #64748b;
+}
+
+.contact-item i {
+    width: 14px;
+    height: 14px;
+}
+
+.cv-divider {
+    height: 1px;
+    background-color: var(--border);
+    margin: 10px 0 30px 0;
+}
+
+.cv-body {
+    display: grid;
+    grid-template-columns: 2.2fr 1fr;
+    gap: 0;
+    flex: 1;
+}
+
+.cv-col-main {
+    padding-right: 40px;
+}
+
+.cv-col-side {
+    background-color: #f8fafc;
+    margin: -40px;
+    margin-left: 0;
+    padding: 40px 30px;
+    border-left: 1px solid var(--border);
+}
+
+.cv-section {
+    margin-bottom: 30px;
+}
+
+.cv-section h3 {
+    font-size: 13px;
+    text-transform: uppercase;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    color: #1e293b;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.cv-section h3::before {
+    content: '';
+    display: inline-block;
+    width: 3px;
+    height: 14px;
+    background-color: var(--primary);
+    border-radius: 2px;
+}
+
+.cv-section p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #475569;
+}
+
+/* Experience & Education Items in Preview */
+.preview-item {
+    margin-bottom: 20px;
+}
+
+.preview-item-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 4px;
+}
+
+.p-item-title {
+    font-weight: 700;
+    font-size: 15px;
+    color: #1e293b;
+}
+
+.p-item-dates {
+    font-size: 12px;
+    font-weight: 600;
+    color: #94a3b8;
+}
+
+.p-item-subtitle {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--primary);
+    margin-bottom: 8px;
+}
+
+.p-item-desc {
+    white-space: pre-line;
+}
+
+/* Skills Preview */
+.skills-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.skill-tag {
+    background-color: white;
+    color: #475569;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 100px;
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Responsive Hide Contact if empty */
+.contact-item:empty {
+    display: none !important;
+}
+
+/* PDF Printing Optimization */
+@media print {
+    body {
+        background: white;
+    }
+
+    .app-header,
+    .editor-pane,
+    .preview-header {
+        display: none !important;
+    }
+
+    .app-main {
+        display: block;
+    }
+
+    .preview-pane {
+        padding: 0;
+        margin: 0;
+    }
+
+    .cv-document {
+        box-shadow: none;
+        width: 100%;
+        transform: none !important;
+    }
+}
