@@ -86,6 +86,18 @@ body {
     box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
 }
 
+.btn-outline {
+    background-color: transparent;
+    border: 1.5px solid var(--border);
+    color: var(--secondary);
+}
+
+.btn-outline:hover {
+    background-color: #f8fafc;
+    border-color: var(--secondary);
+    color: var(--text-main);
+}
+
 .btn i {
     width: 18px;
     height: 18px;
@@ -542,6 +554,36 @@ textarea:focus {
 /* Responsive Hide Contact if empty */
 .contact-item:empty {
     display: none !important;
+}
+
+/* CV Footer Styling */
+.cv-footer {
+    margin-top: auto;
+    padding-top: 40px;
+}
+
+.footer-line {
+    height: 1px;
+    background-color: var(--border);
+    margin-bottom: 12px;
+    opacity: 0.6;
+}
+
+.footer-content {
+    text-align: center;
+}
+
+.cv-footer p {
+    font-size: 10px;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.075em;
+    font-weight: 500;
+}
+
+.cv-footer b {
+    color: var(--primary);
+    font-weight: 800;
 }
 
 /* PDF Printing Optimization */

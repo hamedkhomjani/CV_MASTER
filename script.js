@@ -5,8 +5,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Elements
     const cvForm = document.getElementById('cv-form');
     const downloadBtn = document.getElementById('download-btn');
+    const resetBtn = document.getElementById('reset-btn');
     const cvPreview = document.getElementById('cv-preview');
-    
+
     // Personal Info Inputs
     const fullNameInput = document.getElementById('fullName');
     const jobTitleInput = document.getElementById('jobTitle');
@@ -26,12 +27,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const previewLinkedin = document.getElementById('preview-linkedin');
     const previewSummary = document.getElementById('preview-summary');
     const previewLanguages = document.getElementById('preview-languages');
-    
+
     // Lists
     const experienceList = document.getElementById('experience-list');
     const educationList = document.getElementById('education-list');
     const skillsList = document.getElementById('skills-list');
-    
+
     const previewExperienceList = document.getElementById('preview-experience-list');
     const previewEducationList = document.getElementById('preview-education-list');
     const previewSkillsList = document.getElementById('preview-skills-list');
@@ -50,11 +51,11 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateText(input, preview, wrapper = null) {
         const val = input.value.trim();
         preview.textContent = val || '';
-        
+
         if (wrapper) {
             wrapper.style.display = val ? 'flex' : 'none';
         }
-        
+
         // Handle defaults for Name/Title if empty
         if (input === fullNameInput && !val) preview.textContent = 'Your Name';
         if (input === jobTitleInput && !val) preview.textContent = 'Job Title';
@@ -70,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
         updateText(phoneInput, previewPhone, document.getElementById('preview-phone-wrap'));
         updateText(locationInput, previewLocation, document.getElementById('preview-location-wrap'));
         updateText(linkedinInput, previewLinkedin, document.getElementById('preview-linkedin-wrap'));
-        
+
         // Summary
         previewSummary.textContent = summaryInput.value || 'Write a compelling summary to catch the recruiter\'s eye...';
         document.getElementById('p-summary-sect').style.display = summaryInput.value ? 'block' : 'none';
@@ -83,21 +84,134 @@ document.addEventListener('DOMContentLoaded', () => {
         updateExperiencePreview();
         updateEducationPreview();
         updateSkillsPreview();
-        
+
         // Refresh icons in preview (since they might be hidden/shown)
         lucide.createIcons();
+
+        // Save to localStorage
+        saveData();
+    }
+
+    /**
+     * Serializes all form data into an object
+     */
+    function getFormData() {
+        const data = {
+            personal: {
+                fullName: fullNameInput.value,
+                jobTitle: jobTitleInput.value,
+                email: emailInput.value,
+                phone: phoneInput.value,
+                location: locationInput.value,
+                linkedin: linkedinInput.value,
+                summary: summaryInput.value,
+                languages: languagesInput.value
+            },
+            experience: [],
+            education: [],
+            skills: []
+        };
+
+        // Experience
+        experienceList.querySelectorAll('.dynamic-item').forEach(item => {
+            data.experience.push({
+                title: item.querySelector('.exp-title').value,
+                company: item.querySelector('.exp-company').value,
+                dates: item.querySelector('.exp-dates').value,
+                desc: item.querySelector('.exp-desc').value
+            });
+        });
+
+        // Education
+        educationList.querySelectorAll('.dynamic-item').forEach(item => {
+            data.education.push({
+                degree: item.querySelector('.edu-degree').value,
+                school: item.querySelector('.edu-school').value,
+                dates: item.querySelector('.edu-dates').value
+            });
+        });
+
+        // Skills
+        skillsList.querySelectorAll('.skill-name').forEach(item => {
+            data.skills.push(item.value);
+        });
+
+        return data;
+    }
+
+    /**
+     * Saves current form state to localStorage
+     */
+    function saveData() {
+        const data = getFormData();
+        localStorage.setItem('archicv-data', JSON.stringify(data));
+    }
+
+    /**
+     * Loads form state from localStorage
+     * Returns true if data was found and loaded
+     */
+    function loadData() {
+        const savedData = localStorage.getItem('archicv-data');
+        if (!savedData) return false;
+
+        try {
+            const data = JSON.parse(savedData);
+
+            // Personal Info
+            fullNameInput.value = data.personal.fullName || '';
+            jobTitleInput.value = data.personal.jobTitle || '';
+            emailInput.value = data.personal.email || '';
+            phoneInput.value = data.personal.phone || '';
+            locationInput.value = data.personal.location || '';
+            linkedinInput.value = data.personal.linkedin || '';
+            summaryInput.value = data.personal.summary || '';
+            languagesInput.value = data.personal.languages || '';
+
+            // Dynamic Sections
+            experienceList.innerHTML = '';
+            data.experience.forEach(exp => {
+                createItem(expTemplate, experienceList);
+                const last = experienceList.lastElementChild;
+                last.querySelector('.exp-title').value = exp.title || '';
+                last.querySelector('.exp-company').value = exp.company || '';
+                last.querySelector('.exp-dates').value = exp.dates || '';
+                last.querySelector('.exp-desc').value = exp.desc || '';
+            });
+
+            educationList.innerHTML = '';
+            data.education.forEach(edu => {
+                createItem(eduTemplate, educationList);
+                const last = educationList.lastElementChild;
+                last.querySelector('.edu-degree').value = edu.degree || '';
+                last.querySelector('.edu-school').value = edu.school || '';
+                last.querySelector('.edu-dates').value = edu.dates || '';
+            });
+
+            skillsList.innerHTML = '';
+            data.skills.forEach(skill => {
+                createItem(skillTemplate, skillsList);
+                skillsList.lastElementChild.querySelector('.skill-name').value = skill || '';
+            });
+
+            updatePreview();
+            return true;
+        } catch (e) {
+            console.error("Error loading saved data", e);
+            return false;
+        }
     }
 
     function updateExperiencePreview() {
         const items = experienceList.querySelectorAll('.dynamic-item');
         previewExperienceList.innerHTML = '';
-        
+
         items.forEach(item => {
             const title = item.querySelector('.exp-title').value;
             const company = item.querySelector('.exp-company').value;
             const dates = item.querySelector('.exp-dates').value;
             const desc = item.querySelector('.exp-desc').value;
-            
+
             if (title || company) {
                 const div = document.createElement('div');
                 div.className = 'preview-item';
@@ -119,12 +233,12 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateEducationPreview() {
         const items = educationList.querySelectorAll('.dynamic-item');
         previewEducationList.innerHTML = '';
-        
+
         items.forEach(item => {
             const degree = item.querySelector('.edu-degree').value;
             const school = item.querySelector('.edu-school').value;
             const dates = item.querySelector('.edu-dates').value;
-            
+
             if (degree || school) {
                 const div = document.createElement('div');
                 div.className = 'preview-item';
@@ -145,7 +259,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateSkillsPreview() {
         const items = skillsList.querySelectorAll('.skill-name');
         previewSkillsList.innerHTML = '';
-        
+
         items.forEach(item => {
             const val = item.value.trim();
             if (val) {
@@ -164,7 +278,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function createItem(template, container, updateFn) {
         const clone = template.content.cloneNode(true);
         const item = clone.querySelector('.dynamic-item') || clone.querySelector('.skill-input-wrap');
-        
+
         // Remove button logic
         const removeBtn = item.querySelector('.btn-remove') || item.querySelector('.btn-remove-sm');
         removeBtn.addEventListener('click', () => {
@@ -198,7 +312,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // PDF Download
     downloadBtn.addEventListener('click', () => {
         const fileName = (fullNameInput.value || 'Resume').replace(/\s+/g, '_') + '.pdf';
-        
+
         const opt = {
             margin: 0,
             filename: fileName,
@@ -212,13 +326,21 @@ document.addEventListener('DOMContentLoaded', () => {
         html2pdf().from(cvPreview).set(opt).save();
     });
 
+    // Reset Data
+    resetBtn.addEventListener('click', () => {
+        if (confirm("Reset to default content? This will clear all your current data.")) {
+            localStorage.removeItem('archicv-data');
+            location.reload();
+        }
+    });
+
     // Preview Scaling logic
     function adjustScaling() {
         const previewPane = document.querySelector('.preview-pane');
         const previewDoc = document.querySelector('.cv-document');
         const containerWidth = previewPane.clientWidth - 80; // Padding
         const docWidth = 793.7; // 210mm in px at 96dpi (approx)
-        
+
         if (containerWidth < docWidth) {
             const scale = containerWidth / docWidth;
             previewDoc.style.transform = `scale(${scale})`;
@@ -230,9 +352,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     window.addEventListener('resize', adjustScaling);
-    
+
     // --- Initial Setup & Dummy Data ---
-    
+
     function addInitialData() {
         // Personal
         fullNameInput.value = "Julianna Vance";
@@ -270,5 +392,7 @@ document.addEventListener('DOMContentLoaded', () => {
         adjustScaling();
     }
 
-    addInitialData();
+    if (!loadData()) {
+        addInitialData();
+    }
 });
