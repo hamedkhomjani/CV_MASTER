@@ -314,11 +314,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const fileName = (fullNameInput.value || 'Resume').replace(/\s+/g, '_') + '.pdf';
 
         const opt = {
-            margin: 0,
+            margin: [15, 0, 15, 0], // Top, Left, Bottom, Right
             filename: fileName,
             image: { type: 'jpeg', quality: 0.98 },
             html2canvas: { scale: 2, useCORS: true },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+            pagebreak: { mode: 'css' }
         };
 
         // Briefly remove transform for clean capture if needed, 
@@ -357,32 +358,63 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function addInitialData() {
         // Personal
-        fullNameInput.value = "Julianna Vance";
-        jobTitleInput.value = "Lead Experience Designer";
-        emailInput.value = "julianna.vance@example.com";
-        phoneInput.value = "+1 (555) 000-1234";
-        locationInput.value = "San Francisco, CA";
-        linkedinInput.value = "linkedin.com/in/juliannavance";
-        summaryInput.value = "Visionary Experience Designer with over 8 years of expertise in creating intuitive digital ecosystems. Proven track record of leading cross-functional teams to deliver award-winning products that balance business goals with human-centric needs.";
-        languagesInput.value = "English (Native), German (Fluent)";
+        fullNameInput.value = "Hamed Khomjani";
+        jobTitleInput.value = "UX/UI Designer";
+        emailInput.value = "eng.h.khomjani@gmail.com";
+        phoneInput.value = "0762573273";
+        location.value = "Älvsjö, Stockholm"; // Simplified for layout
+        linkedinInput.value = "behance.net/hamedkhomjanidesign";
+        summaryInput.value = "Dynamic UX/UI Designer with a proven track record at Purspot AB, enhancing user engagement through innovative design and responsive platforms. Expert in Figma and adept at fostering collaboration, I've significantly streamlined workflows and improved productivity. My designs, grounded in UX research, elevate usability and aesthetics, consistently meeting project goals.";
+        languagesInput.value = "Persian (Native), English (C1), Swedish (A2), German (A2)";
 
-        // One Exp
-        createItem(expTemplate, experienceList);
-        const lastExp = experienceList.lastElementChild;
-        lastExp.querySelector('.exp-title').value = "Senior UX Designer";
-        lastExp.querySelector('.exp-company').value = "Creative Pulse Agencies";
-        lastExp.querySelector('.exp-dates').value = "2020 - Present";
-        lastExp.querySelector('.exp-desc').value = "- Conceptualized and led the redesign of 3 major e-commerce platforms.\n- Increased user engagement by 45% through iterative prototyping.\n- Mentored a team of 5 junior designers.";
+        // Experience
+        const expData = [
+            {
+                title: "UX/UI Designer",
+                company: "Purspot AB - Stockholm",
+                dates: "May 2022 - Current",
+                desc: "- Developed responsive platforms across multi-viewport devices.\n- Optimized enterprise app interfaces for large-scale organizations.\n- Defined typography and iconography standards for mobile/web.\n- Created UX deliverables: task analyses, storyboards, and use cases."
+            },
+            {
+                title: "UX/UI Designer",
+                company: "ILISH - Stockholm",
+                dates: "May 2020 - April 2022",
+                desc: "- Improved layouts to achieve usability and performance objectives.\n- Documented style guidelines for high-traffic mobile apps.\n- Collaborated with dev teams to ensure pixel-perfect implementation."
+            },
+            {
+                title: "UX Designer",
+                company: "Gapfilm - Tehran",
+                dates: "March 2018 - April 2020",
+                desc: "- Implemented Scrum methodology in software development cycles.\n- Generated UX research and user flow concepts for media apps.\n- Crafted icon sets and brand-aligned mobile interfaces."
+            }
+        ];
 
-        // One Edu
-        createItem(eduTemplate, educationList);
-        const lastEdu = educationList.lastElementChild;
-        lastEdu.querySelector('.edu-degree').value = "M.A. in Interaction Design";
-        lastEdu.querySelector('.edu-school').value = "Stanford University";
-        lastEdu.querySelector('.edu-dates').value = "2014 - 2016";
+        expData.forEach(exp => {
+            createItem(expTemplate, experienceList);
+            const last = experienceList.lastElementChild;
+            last.querySelector('.exp-title').value = exp.title;
+            last.querySelector('.exp-company').value = exp.company;
+            last.querySelector('.exp-dates').value = exp.dates;
+            last.querySelector('.exp-desc').value = exp.desc;
+        });
 
-        // Some Skills
-        ['Figma', 'UI/UX Design', 'Project Management', 'User Research'].forEach(s => {
+        // Education
+        const eduData = [
+            { degree: "AI in Design & Mobile UX", school: "ProApp Online", dates: "Dec 2024" },
+            { degree: "Diploma Frontend Developer", school: "Hyper Island Stockholm", dates: "2021" },
+            { degree: "B.S. Chemical Engineering", school: "Azad University", dates: "2014" }
+        ];
+
+        eduData.forEach(edu => {
+            createItem(eduTemplate, educationList);
+            const last = educationList.lastElementChild;
+            last.querySelector('.edu-degree').value = edu.degree;
+            last.querySelector('.edu-school').value = edu.school;
+            last.querySelector('.edu-dates').value = edu.dates;
+        });
+
+        // Skills
+        ['Figma', 'UX Research', 'Frontend (React/Vue)', 'Wireframing', 'Prototyping', 'Lean UX', 'HTML/CSS/JS', 'Adobe XD', 'Rhino (3D)'].forEach(s => {
             createItem(skillTemplate, skillsList);
             skillsList.lastElementChild.querySelector('.skill-name').value = s;
         });
