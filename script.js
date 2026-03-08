@@ -136,6 +136,9 @@ document.addEventListener('DOMContentLoaded', () => {
             data.skills.push(item.value);
         });
 
+        const activeBtn = document.querySelector('.btn-template.active');
+        data.template = activeBtn ? activeBtn.dataset.template : 'modern';
+
         return data;
     }
 
@@ -195,12 +198,37 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             updatePreview();
+
+            // Set initial active template state
+            const currentTemplate = data.template || 'modern';
+            document.querySelectorAll('.btn-template').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.template === currentTemplate);
+            });
+            cvPreview.className = `cv-document t-${currentTemplate}`;
+
             return true;
         } catch (e) {
             console.error("Error loading saved data", e);
             return false;
         }
     }
+
+    // --- Template Switching ---
+    document.querySelectorAll('.btn-template').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const template = btn.dataset.template;
+
+            // UI Toggle
+            document.querySelectorAll('.btn-template').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            // Apply to Preview
+            cvPreview.className = `cv-document t-${template}`;
+
+            // Save state
+            saveData();
+        });
+    });
 
     function updateExperiencePreview() {
         const items = experienceList.querySelectorAll('.dynamic-item');
