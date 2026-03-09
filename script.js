@@ -32,10 +32,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const experienceList = document.getElementById('experience-list');
     const educationList = document.getElementById('education-list');
     const skillsList = document.getElementById('skills-list');
+    const posList = document.getElementById('pos-list');
+    const toolsList = document.getElementById('tools-list');
+    const testingList = document.getElementById('testing-list');
 
     const previewExperienceList = document.getElementById('preview-experience-list');
     const previewEducationList = document.getElementById('preview-education-list');
     const previewSkillsList = document.getElementById('preview-skills-list');
+    const previewPosList = document.getElementById('preview-pos-list');
+    const previewToolsList = document.getElementById('preview-tools-list');
+    const previewTestingList = document.getElementById('preview-testing-list');
 
     // Templates
     const expTemplate = document.getElementById('experience-item-template');
@@ -83,7 +89,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // Update Dynamic Sections
         updateExperiencePreview();
         updateEducationPreview();
-        updateSkillsPreview();
+        updateSkillsPreview(skillsList, previewSkillsList, 'p-skills-sect');
+        updateSkillsPreview(posList, previewPosList, 'p-pos-sect');
+        updateSkillsPreview(toolsList, previewToolsList, 'p-tools-sect');
+        updateSkillsPreview(testingList, previewTestingList, 'p-testing-sect');
 
         // Refresh icons in preview (since they might be hidden/shown)
         lucide.createIcons();
@@ -109,7 +118,10 @@ document.addEventListener('DOMContentLoaded', () => {
             },
             experience: [],
             education: [],
-            skills: []
+            skills: [],
+            pos: [],
+            tools: [],
+            testing: []
         };
 
         // Experience
@@ -134,6 +146,15 @@ document.addEventListener('DOMContentLoaded', () => {
         // Skills
         skillsList.querySelectorAll('.skill-name').forEach(item => {
             data.skills.push(item.value);
+        });
+        posList.querySelectorAll('.skill-name').forEach(item => {
+            data.pos.push(item.value);
+        });
+        toolsList.querySelectorAll('.skill-name').forEach(item => {
+            data.tools.push(item.value);
+        });
+        testingList.querySelectorAll('.skill-name').forEach(item => {
+            data.testing.push(item.value);
         });
 
         const activeBtn = document.querySelector('.btn-template.active');
@@ -197,9 +218,40 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (skill) {
                         createItem(skillTemplate, skillsList);
                         const last = skillsList.lastElementChild;
-                        const input = last.querySelector('.skill-name');
-                        // Ensure it's a string even if corrupted data exists in localStorage
-                        input.value = (typeof skill === 'object' ? (skill.name || skill.skill || '') : skill) || '';
+                        last.querySelector('.skill-name').value = (typeof skill === 'object' ? (skill.name || skill.skill || '') : skill) || '';
+                    }
+                });
+            }
+
+            posList.innerHTML = '';
+            if (Array.isArray(data.pos)) {
+                data.pos.forEach(skill => {
+                    if (skill) {
+                        createItem(skillTemplate, posList);
+                        const last = posList.lastElementChild;
+                        last.querySelector('.skill-name').value = (typeof skill === 'object' ? (skill.name || skill.skill || '') : skill) || '';
+                    }
+                });
+            }
+
+            toolsList.innerHTML = '';
+            if (Array.isArray(data.tools)) {
+                data.tools.forEach(skill => {
+                    if (skill) {
+                        createItem(skillTemplate, toolsList);
+                        const last = toolsList.lastElementChild;
+                        last.querySelector('.skill-name').value = (typeof skill === 'object' ? (skill.name || skill.skill || '') : skill) || '';
+                    }
+                });
+            }
+
+            testingList.innerHTML = '';
+            if (Array.isArray(data.testing)) {
+                data.testing.forEach(skill => {
+                    if (skill) {
+                        createItem(skillTemplate, testingList);
+                        const last = testingList.lastElementChild;
+                        last.querySelector('.skill-name').value = (typeof skill === 'object' ? (skill.name || skill.skill || '') : skill) || '';
                     }
                 });
             }
@@ -291,9 +343,9 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('p-education-sect').style.display = previewEducationList.children.length > 0 ? 'block' : 'none';
     }
 
-    function updateSkillsPreview() {
-        const items = skillsList.querySelectorAll('.skill-name');
-        previewSkillsList.innerHTML = '';
+    function updateSkillsPreview(listElement, previewElement, sectionId) {
+        const items = listElement.querySelectorAll('.skill-name');
+        previewElement.innerHTML = '';
 
         items.forEach(item => {
             const val = item.value.trim();
@@ -301,11 +353,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 const span = document.createElement('span');
                 span.className = 'skill-tag';
                 span.textContent = val;
-                previewSkillsList.appendChild(span);
+                previewElement.appendChild(span);
             }
         });
 
-        document.getElementById('p-skills-sect').style.display = previewSkillsList.children.length > 0 ? 'block' : 'none';
+        document.getElementById(sectionId).style.display = previewElement.children.length > 0 ? 'block' : 'none';
     }
 
     // --- Dynamic Item Management ---
@@ -343,6 +395,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('add-experience').addEventListener('click', () => createItem(expTemplate, experienceList));
     document.getElementById('add-education').addEventListener('click', () => createItem(eduTemplate, educationList));
     document.getElementById('add-skill').addEventListener('click', () => createItem(skillTemplate, skillsList));
+    document.getElementById('add-pos').addEventListener('click', () => createItem(skillTemplate, posList));
+    document.getElementById('add-tool').addEventListener('click', () => createItem(skillTemplate, toolsList));
+    document.getElementById('add-testing').addEventListener('click', () => createItem(skillTemplate, testingList));
 
     // PDF Download
     downloadBtn.addEventListener('click', () => {
@@ -449,9 +504,27 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // Skills
-        ['Figma', 'UX Research', 'Frontend (React/Vue)', 'Wireframing', 'Prototyping', 'Lean UX', 'HTML/CSS/JS', 'Adobe XD', 'Rhino (3D)'].forEach(s => {
+        ['UX Research', 'Wireframing', 'Prototyping', 'Lean UX', 'Information Architecture', 'Visual Design'].forEach(s => {
             createItem(skillTemplate, skillsList);
             skillsList.lastElementChild.querySelector('.skill-name').value = s;
+        });
+
+        // Product & POS Systems
+        ['Purspot POS', 'Retail Management', 'Inventory Systems', 'Payment Gateways'].forEach(s => {
+            createItem(skillTemplate, posList);
+            posList.lastElementChild.querySelector('.skill-name').value = s;
+        });
+
+        // Tools
+        ['Figma', 'Adobe XD', 'Rhino (3D)', 'Miro', 'Hotjar'].forEach(s => {
+            createItem(skillTemplate, toolsList);
+            toolsList.lastElementChild.querySelector('.skill-name').value = s;
+        });
+
+        // Product & Testing
+        ['Manual Testing', 'User Acceptance Testing (UAT)', 'A/B Testing', 'HTML/CSS/JS'].forEach(s => {
+            createItem(skillTemplate, testingList);
+            testingList.lastElementChild.querySelector('.skill-name').value = s;
         });
 
         // Update all

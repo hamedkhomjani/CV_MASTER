@@ -14,6 +14,9 @@
     --radius: 12px;
 }
 
+/* ==========================================================================
+   1. RESET & BASE
+   ========================================================================== */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -28,6 +31,9 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
+/* ==========================================================================
+   2. APP UI (SIDEBAR, BUTTONS, FORMS)
+   ========================================================================== */
 .app-container {
     display: flex;
     flex-direction: column;
@@ -36,7 +42,6 @@ body {
     overflow: hidden;
 }
 
-/* Header Styling */
 .app-header {
     background-color: var(--bg-card);
     padding: 0.75rem 2rem;
@@ -57,11 +62,6 @@ body {
     font-weight: 600;
 }
 
-.logo i {
-    width: 24px;
-    height: 24px;
-}
-
 .template-switcher {
     display: flex;
     background: #f1f5f9;
@@ -73,13 +73,13 @@ body {
 .btn-template {
     padding: 6px 16px;
     border-radius: 7px;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
     border: none;
+    cursor: pointer;
     background: transparent;
+    font-weight: 600;
+    font-size: 13px;
     color: var(--secondary);
-    transition: all 0.2s;
+    transition: 0.2s;
 }
 
 .btn-template.active {
@@ -97,7 +97,7 @@ body {
     font-weight: 600;
     font-size: 0.875rem;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: 0.2s;
     border: none;
 }
 
@@ -118,18 +118,6 @@ body {
     color: var(--secondary);
 }
 
-.btn-outline:hover {
-    background-color: #f8fafc;
-    border-color: var(--secondary);
-    color: var(--text-main);
-}
-
-.btn i {
-    width: 18px;
-    height: 18px;
-}
-
-/* Main Layout */
 .app-main {
     flex: 1;
     display: grid;
@@ -137,7 +125,6 @@ body {
     overflow: hidden;
 }
 
-/* Editor Pane (Left) */
 .editor-pane {
     background-color: var(--bg-card);
     border-right: 1px solid var(--border);
@@ -152,50 +139,19 @@ body {
     flex: 1;
 }
 
-.editor-scroll::-webkit-scrollbar {
-    width: 6px;
-}
-
-.editor-scroll::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.editor-scroll::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
-    border-radius: 10px;
-}
-
 .form-section {
     margin-bottom: 2.5rem;
-}
-
-.section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
 }
 
 .section-title {
     font-size: 1rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.025em;
     color: var(--secondary);
     display: flex;
     align-items: center;
     gap: 0.75rem;
     margin-bottom: 1rem;
-}
-
-.section-header .section-title {
-    margin-bottom: 0;
-}
-
-.section-title i {
-    width: 20px;
-    height: 20px;
-    color: var(--primary);
 }
 
 .input-grid {
@@ -204,10 +160,9 @@ body {
     gap: 1rem;
 }
 
-.input-grid input[type="text"],
-.input-grid input[type="email"],
-.input-grid input[type="tel"],
+.input-grid input,
 .input-grid textarea,
+#summary,
 #languages {
     width: 100%;
     padding: 0.75rem 1rem;
@@ -216,38 +171,10 @@ body {
     background-color: #f8fafc;
     font-family: inherit;
     font-size: 0.875rem;
-    transition: all 0.2s;
+    transition: 0.2s;
     outline: none;
 }
 
-#summary {
-    width: 100%;
-    min-height: 120px;
-    padding: 0.75rem 1rem;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    background-color: #f8fafc;
-    font-family: inherit;
-    font-size: 0.875rem;
-    resize: vertical;
-}
-
-.field label {
-    display: block;
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: var(--text-muted);
-    margin-bottom: 0.375rem;
-}
-
-input:focus,
-textarea:focus {
-    border-color: var(--primary);
-    background-color: white;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-}
-
-/* Dynamic Item Styling */
 .dynamic-item {
     background: white;
     border: 1px solid var(--border);
@@ -255,25 +182,6 @@ textarea:focus {
     padding: 1.25rem;
     margin-bottom: 1rem;
     position: relative;
-    transition: all 0.2s;
-}
-
-.dynamic-item:hover {
-    border-color: #cbd5e1;
-    box-shadow: var(--shadow-sm);
-}
-
-.item-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-}
-
-.item-label {
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: #94a3b8;
 }
 
 .btn-remove {
@@ -282,11 +190,6 @@ textarea:focus {
     background: none;
     border: none;
     opacity: 0.7;
-    transition: opacity 0.2s;
-}
-
-.btn-remove:hover {
-    opacity: 1;
 }
 
 .btn-add {
@@ -294,56 +197,27 @@ textarea:focus {
     border: none;
     color: var(--primary);
     font-weight: 600;
-    font-size: 0.875rem;
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 0.25rem;
-    transition: transform 0.2s;
+    gap: 4px;
 }
 
-.btn-add:hover {
-    transform: scale(1.05);
+.app-sidebar-footer {
+    margin-top: 3rem;
+    padding: 2rem 0;
+    text-align: center;
+    border-top: 1px dashed var(--border);
 }
 
-/* Skill Chips Input */
-.dynamic-list-chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
+.app-sidebar-footer p {
+    font-size: 0.75rem;
+    color: var(--text-muted);
 }
 
-.skill-input-wrap {
-    display: flex;
-    align-items: center;
-    background: #f1f5f9;
-    border-radius: 20px;
-    padding: 0.25rem 0.5rem 0.25rem 1rem;
-    border: 1px solid var(--border);
-}
-
-.skill-input-wrap input {
-    background: transparent;
-    border: none;
-    outline: none;
-    font-size: 0.8125rem;
-    width: 100px;
-    font-weight: 500;
-}
-
-.btn-remove-sm {
-    background: none;
-    border: none;
-    color: #94a3b8;
-    cursor: pointer;
-    margin-left: 0.25rem;
-}
-
-.btn-remove-sm:hover {
-    color: #ef4444;
-}
-
-/* Preview Pane (Right) */
+/* ==========================================================================
+   3. CV BASE PREVIEW WRAPPER
+   ========================================================================== */
 .preview-pane {
     background-color: var(--bg-app);
     padding: 2.5rem;
@@ -353,434 +227,29 @@ textarea:focus {
     align-items: center;
 }
 
-.preview-header {
-    width: 100%;
-    max-width: 800px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-}
-
-.preview-badge {
-    background: rgba(37, 99, 235, 0.1);
-    color: var(--primary);
-    font-size: 0.75rem;
-    font-weight: 700;
-    padding: 0.25rem 0.75rem;
-    border-radius: 20px;
-}
-
-.preview-zoom-info {
-    font-size: 0.75rem;
-    color: var(--text-muted);
-}
-
 .preview-container {
     width: 100%;
-    height: auto;
     display: flex;
     justify-content: center;
     padding-bottom: 5rem;
 }
 
-/* CV Document Styling (The A4 Paper) */
 .cv-document {
     width: 210mm;
     min-height: 297mm;
     background: white;
-    padding: 10mm 20mm;
-    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-    display: flex;
-    flex-direction: column;
-    color: #334155;
+    box-shadow: var(--shadow-lg);
     font-family: 'Inter', sans-serif;
-    transform-origin: top center;
-    overflow: visible;
     position: relative;
     transition: all 0.3s ease;
+    /* Shared Document Logic */
 }
 
-/* Template: Executive (Designer) Specific Styles */
-.cv-document.t-designer {
-    padding: 0;
-    display: grid;
-    grid-template-columns: 80mm 1fr;
-    grid-template-rows: auto 1fr auto;
-}
-
-.t-designer .cv-header {
-    grid-column: 1;
-    grid-row: 1 / span 2;
-    background: #f3cf98;
-    /* Warm sandy color from image */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 40px 30px;
-    height: 100%;
-    margin-bottom: 0;
-    justify-content: flex-start;
-}
-
-.t-designer .header-left {
-    flex-direction: column;
-    text-align: center;
-    gap: 25px;
-}
-
-.t-designer .profile-image-placeholder {
-    width: 140px;
-    height: 140px;
-    border: 4px solid white;
-    box-shadow: var(--shadow-md);
-}
-
-.t-designer .header-main h1 {
-    font-size: 28px;
-    color: #333;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 8px;
-}
-
-.t-designer .header-main .sub-title {
-    color: #555;
-    font-weight: 600;
-    text-transform: uppercase;
-    font-size: 14px;
-}
-
-.t-designer .header-contact {
-    margin-top: 40px;
-    text-align: left;
-    width: 100%;
-    align-items: flex-start;
-}
-
-.t-designer .contact-item {
-    justify-content: flex-start;
-    color: #444;
-    font-weight: 500;
-    margin-bottom: 12px;
-}
-
-.t-designer .cv-divider {
-    display: none;
-    /* No divider in this template */
-}
-
-.t-designer .cv-body {
-    grid-column: 2;
-    grid-row: 1 / span 2;
-    display: flex;
-    flex-direction: column;
-    padding: 40px 40px 40px 30px;
-}
-
-.t-designer .cv-col-main {
-    padding-right: 0;
-}
-
-.t-designer .cv-col-side {
-    background: transparent;
-    margin: 40px 0 0 0;
-    padding: 0;
-    border-left: none;
-    order: 3;
-}
-
-/* Move side sections to sidebar for designer template using positioning */
-.t-designer #p-skills-sect,
-.t-designer #p-languages-sect {
-    position: absolute;
-    left: 30px;
-    width: calc(80mm - 60px);
-}
-
-.t-designer #p-skills-sect {
-    top: 500px;
-}
-
-.t-designer #p-languages-sect {
-    top: 750px;
-}
-
-.t-designer .cv-section h3 {
-    border-left: 4px solid #333;
-    padding-left: 12px;
-}
-
-.t-designer .cv-section h3::before {
-    display: none;
-}
-
-.t-designer .cv-footer {
-    grid-column: 1 / span 2;
-    background: white;
-    padding: 10px 0;
-}
-
-/* Template: Creative Specific Styles */
-.cv-document.t-creative {
-    background: #fdfbf7;
-    padding: 10mm 20mm;
-    color: #111;
-}
-
-.t-creative .cv-header {
-    display: grid;
-    grid-template-columns: 1.2fr 1fr 1fr;
-    gap: 20px;
-    margin-bottom: 40px;
-    align-items: start;
-}
-
-.t-creative .header-left {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 20px;
-}
-
-.t-creative .profile-image-placeholder {
-    width: 130px;
-    height: 130px;
-    border-radius: 24px;
-    background: #d4e815;
-    /* Vibrant Accent */
-    color: #111;
-    border: none;
-}
-
-.t-creative .header-main {
-    text-align: left;
-}
-
-.t-creative .header-main h1 {
-    font-size: 32px;
-    font-weight: 900;
-    color: #111;
-    line-height: 1.1;
-    margin-top: 10px;
-}
-
-.t-creative .header-main .sub-title {
-    background: #d4e815;
-    color: #111;
-    padding: 4px 14px;
-    border-radius: 30px;
-    font-size: 11px;
-    font-weight: 800;
-    text-transform: uppercase;
-    display: inline-block;
-    margin-top: 10px;
-}
-
-.t-creative .header-contact {
-    text-align: left;
-    align-items: flex-start;
-    margin-top: 10px;
-}
-
-.t-creative .contact-item {
-    justify-content: flex-start;
-    color: #444;
-    font-weight: 600;
-}
-
-.t-creative .cv-divider {
-    display: none;
-}
-
-.t-creative .cv-body {
-    display: grid;
-    grid-template-columns: 1fr 2.2fr;
-    /* Sidebar Left */
-    gap: 40px;
-}
-
-.t-creative .cv-col-side {
-    background: transparent;
-    margin: 0;
-    padding: 0;
-    border: none;
-    order: -1;
-    /* Move to left */
-}
-
-.t-creative .cv-section h3 {
-    border: none;
-    padding: 0;
-    font-size: 18px;
-    font-weight: 900;
-    color: #111;
-    margin-bottom: 15px;
-}
-
-.t-creative .cv-section h3::before {
-    display: none;
-}
-
-.t-creative #p-summary-sect p {
-    background: #f1f1f1;
-    padding: 25px;
-    border-radius: 20px;
-    font-weight: 500;
-    line-height: 1.6;
-}
-
-.t-creative .preview-item {
-    background: #f1f1f1;
-    padding: 20px;
-    border-radius: 20px;
-    margin-bottom: 20px;
-}
-
-.t-creative .p-item-title {
-    font-weight: 800;
-    font-size: 16px;
-}
-
-.t-creative .p-item-dates {
-    background: #d4e815;
-    color: #111;
-    padding: 3px 12px;
-    border-radius: 12px;
-    font-size: 10px;
-    font-weight: 800;
-}
-
-.t-creative .p-item-subtitle {
-    font-weight: 700;
-    color: #666;
-}
-
-.t-creative .skill-tag {
-    background: #f1f1f1;
-    border: none;
-    font-size: 10px;
-    padding: 6px 14px;
-    font-weight: 700;
-}
-
-.t-creative .cv-footer {
-    border-top: 1px solid #eee;
-    margin-top: 30px;
-    padding-top: 20px;
-}
-
-/* Page Break Indicator for Preview */
-.page-break-indicator {
-    position: absolute;
-    top: 297mm;
-    left: 0;
-    right: 0;
-    border-top: 2px dashed var(--primary);
-    opacity: 0.3;
-    font-size: 10px;
-    font-weight: 800;
-    color: var(--primary);
-    text-align: center;
-    padding-top: 4px;
-    pointer-events: none;
-    z-index: 100;
-}
-
-/* Live scaling logic would be handled by JS or media queries if needed */
-
-.cv-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 40px;
-}
-
-.header-left {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
-.profile-image-placeholder {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    background: #f1f5f9;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 2px solid var(--border);
-    color: var(--secondary);
-}
-
-.profile-image-placeholder i {
-    width: 32px;
-    height: 32px;
-}
-
-.header-main h1 {
-    font-size: 36px;
-    font-weight: 800;
-    color: #0f172a;
-    letter-spacing: -0.04em;
-    line-height: 1;
-    margin-bottom: 4px;
-}
-
-.header-main .sub-title {
-    font-size: 18px;
-    font-weight: 500;
-    color: var(--primary);
-    letter-spacing: 0.01em;
-}
-
-.header-contact {
-    text-align: right;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.contact-item {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 6px;
-    font-size: 13px;
-    color: #64748b;
-}
-
-.contact-item i {
-    width: 14px;
-    height: 14px;
-}
-
-.cv-divider {
-    height: 1px;
-    background-color: var(--border);
-    margin: 10px 0 30px 0;
-}
-
-.cv-body {
-    display: grid;
-    grid-template-columns: 2.2fr 1fr;
-    gap: 0;
-    flex: 1;
-}
-
-.cv-col-main {
-    padding-right: 40px;
-}
-
-.cv-col-side {
-    background-color: #f8fafc;
-    margin: -10mm -20mm -10mm 0;
-    padding: 10mm 30px;
-    border-left: 1px solid var(--border);
-}
-
+/* ==========================================================================
+   4. SHARED CV COMPONENTS (Text, Items, Chips)
+   ========================================================================== */
 .cv-section {
-    margin-bottom: 30px;
+    margin-bottom: 35px;
 }
 
 .cv-section h3 {
@@ -789,39 +258,27 @@ textarea:focus {
     font-weight: 800;
     letter-spacing: 0.1em;
     color: #1e293b;
-    margin-bottom: 16px;
+    margin-bottom: 18px;
     display: flex;
     align-items: center;
-    gap: 10px;
-}
-
-.cv-section h3::before {
-    content: '';
-    display: inline-block;
-    width: 3px;
-    height: 14px;
-    background-color: var(--primary);
-    border-radius: 2px;
+    gap: 8px;
 }
 
 .cv-section p {
     font-size: 14px;
-    line-height: 1.6;
+    line-height: 1.5;
     color: #475569;
 }
 
-/* Experience & Education Items in Preview */
 .preview-item {
-    margin-bottom: 20px;
-    break-inside: avoid;
-    page-break-inside: avoid;
+    margin-bottom: 18px;
 }
 
 .preview-item-top {
     display: flex;
     justify-content: space-between;
     align-items: baseline;
-    margin-bottom: 4px;
+    margin-bottom: 2px;
 }
 
 .p-item-title {
@@ -837,17 +294,17 @@ textarea:focus {
 }
 
 .p-item-subtitle {
-    font-size: 13px;
-    font-weight: 500;
+    font-size: 13.5px;
+    font-weight: 600;
     color: var(--primary);
     margin-bottom: 8px;
 }
 
 .p-item-desc {
     white-space: pre-line;
+    font-size: 13.5px;
 }
 
-/* Skills Preview */
 .skills-grid {
     display: flex;
     flex-wrap: wrap;
@@ -855,44 +312,27 @@ textarea:focus {
 }
 
 .skill-tag {
-    background-color: white;
+    background-color: #f8fafc;
     color: #475569;
     font-size: 11px;
     font-weight: 600;
-    padding: 5px 12px;
+    padding: 4px 12px;
     border-radius: 100px;
     border: 1px solid var(--border);
-    box-shadow: var(--shadow-sm);
 }
 
-/* Responsive Hide Contact if empty */
-.contact-item:empty {
-    display: none !important;
-}
-
-/* CV Footer Styling */
 .cv-footer {
-    margin-top: auto;
-    padding-top: 40px;
-}
-
-.footer-line {
-    height: 1px;
-    background-color: var(--border);
-    margin-bottom: 12px;
-    opacity: 0.6;
-}
-
-.footer-content {
+    margin-top: 50px;
+    padding-top: 60px;
     text-align: center;
+    border-top: 1px solid #f1f5f9;
 }
 
 .cv-footer p {
     font-size: 10px;
     color: #94a3b8;
     text-transform: uppercase;
-    letter-spacing: 0.075em;
-    font-weight: 500;
+    letter-spacing: 0.05em;
 }
 
 .cv-footer b {
@@ -900,7 +340,570 @@ textarea:focus {
     font-weight: 800;
 }
 
-/* PDF Printing Optimization */
+.page-break-indicator {
+    position: absolute;
+    top: 297mm;
+    left: 0;
+    right: 0;
+    border-top: 2px dashed var(--primary);
+    opacity: 0.2;
+    font-size: 10px;
+    color: var(--primary);
+    text-align: center;
+    pointer-events: none;
+}
+
+/* ==========================================================================
+   5. TEMPLATE: MODERN (.t-modern) - Default White/Gray 2-Col
+   ========================================================================== */
+.cv-document.t-modern {
+    padding: 15mm 20mm;
+}
+
+.t-modern .cv-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.t-modern .header-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.t-modern .profile-image-placeholder {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--border);
+}
+
+.t-modern .header-main h1 {
+    font-size: 38px;
+    font-weight: 850;
+    color: #0f172a;
+    line-height: 1;
+    letter-spacing: -0.05em;
+}
+
+.t-modern .header-main .sub-title {
+    font-size: 18px;
+    color: var(--primary);
+}
+
+.t-modern .header-contact {
+    text-align: right;
+    font-size: 13px;
+    color: #64748b;
+}
+
+.t-modern .contact-item {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+    margin-bottom: 2px;
+}
+
+.t-modern .cv-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 10px 0 25px 0;
+}
+
+.t-modern .cv-body {
+    display: grid;
+    grid-template-columns: 2.2fr 1fr;
+    /* Main left, Side right */
+    gap: 40px;
+}
+
+.t-modern .cv-col-side {
+    background: #f8fafc;
+    margin: -10mm -20mm -10mm 0;
+    padding: 10mm 25px;
+    border-left: 1px solid var(--border);
+}
+
+.t-modern .cv-section h3::before {
+    content: '';
+    display: inline-block;
+    width: 3px;
+    height: 14px;
+    background: var(--primary);
+    border-radius: 2px;
+}
+
+/* ==========================================================================
+   6. TEMPLATE: EXECUTIVE (.t-designer) - Yellow/White Sidebar Left
+   ========================================================================== */
+.cv-document.t-designer {
+    padding: 0 !important;
+    background: white !important;
+    display: block !important;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* SIDEBAR COLOR FILL - PINNED TO EDGES */
+.cv-document.t-designer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 80mm;
+    height: 100%;
+    background: #f3cf98 !important;
+    z-index: 0;
+    display: block !important;
+}
+
+.t-designer .cv-header {
+    position: relative;
+    float: left;
+    width: 80mm;
+    padding: 60px 0 30px 0;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    z-index: 1;
+}
+
+.t-designer .header-left {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    width: 100% !important;
+    margin-bottom: 25px;
+}
+
+.t-designer .profile-image-placeholder {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    background: white;
+    border: 5px solid white;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin-bottom: 20px;
+}
+
+.t-designer .profile-image-placeholder i,
+.t-designer .profile-image-placeholder svg {
+    width: 65px !important;
+    height: 65px !important;
+    color: #f3cf98 !important;
+    display: block !important;
+}
+
+.t-designer .header-main {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.t-designer .header-main h1 {
+    font-size: 28px;
+    font-weight: 900;
+    text-transform: uppercase;
+    color: #111;
+    letter-spacing: 0.04em;
+    line-height: 1.1;
+    margin: 0;
+}
+
+.t-designer .header-main .sub-title {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: #444;
+    margin-top: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.t-designer .header-contact {
+    width: 100%;
+    margin-top: 25px;
+    font-size: 11.5px;
+    font-weight: 600;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.t-designer .contact-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    justify-content: center;
+    width: 100%;
+    color: #333;
+}
+
+.t-designer .contact-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    justify-content: flex-start;
+    padding: 0 15px;
+    color: #333;
+}
+
+.t-designer .cv-body {
+    display: block;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+}
+
+.t-designer .cv-col-side {
+    float: left;
+    clear: left;
+    width: 80mm;
+    padding: 0 25px 50px 25px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.t-designer .cv-col-main {
+    float: right;
+    width: 130mm;
+    padding: 60px 45px 60px 45px;
+    box-sizing: border-box;
+    background: transparent;
+}
+
+.t-designer .cv-section h3 {
+    border-left: 4px solid #333;
+    padding-left: 10px;
+    font-size: 14px;
+    color: #111;
+}
+
+.t-designer .cv-divider {
+    display: none;
+}
+
+.t-designer .cv-footer {
+    clear: both;
+    background: white;
+    padding: 60px 0 30px 0;
+    margin-top: 50px;
+    border-top: 1px solid #eee;
+    position: relative;
+    z-index: 10;
+}
+
+/* ==========================================================================
+   7. TEMPLATE: CREATIVE (.t-creative) - Modern Bold & Colorful
+   ========================================================================== */
+.cv-document.t-creative {
+    background: #fdfbf7;
+    padding: 10mm 15mm;
+}
+
+.t-creative .cv-header {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 25px;
+    margin-bottom: 40px;
+    align-items: center;
+}
+
+.t-creative .profile-image-placeholder {
+    width: 130px;
+    height: 130px;
+    border-radius: 28px;
+    background: #d4e815;
+    border: none;
+    box-shadow: 6px 6px 0px #111;
+}
+
+.t-creative .header-main h1 {
+    font-size: 32px;
+    font-weight: 900;
+    line-height: 1.1;
+}
+
+.t-creative .header-main .sub-title {
+    background: #d4e815;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.t-creative .header-contact {
+    font-size: 12px;
+    font-weight: 600;
+    text-align: right;
+}
+
+.t-creative .contact-item {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+}
+
+.t-creative .cv-body {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 30px;
+}
+
+.t-creative .cv-col-side {
+    order: -1;
+}
+
+.t-creative .cv-section h3 {
+    color: #111;
+    font-weight: 900;
+    font-size: 16px;
+    border: none;
+}
+
+.t-creative .cv-section p {
+    background: #f0f0f0;
+    padding: 15px;
+    border-radius: 12px;
+}
+
+.t-creative .preview-item {
+    background: #f0f0f0;
+    padding: 15px;
+    border-radius: 12px;
+}
+
+.t-creative .p-item-dates {
+    background: #d4e815;
+    padding: 2px 8px;
+    border-radius: 6px;
+    color: #111;
+}
+
+/* ==========================================================================
+   8. TEMPLATE: ONYX ELITE (.t-onyx) - Redesigned Corporate Luxe
+   ========================================================================== */
+.cv-document.t-onyx {
+    background: #ffffff;
+    color: #1e293b;
+    padding: 0;
+    line-height: 1.6;
+}
+
+.t-onyx .cv-header {
+    background: #0f172a;
+    padding: 60px 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Subtle background accent for Onyx */
+.t-onyx .cv-header::after {
+    content: '';
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(56, 189, 248, 0.1) 0%, transparent 70%);
+    z-index: 0;
+}
+
+.t-onyx .header-left {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: flex-end !important;
+    gap: 30px;
+    position: relative;
+    z-index: 1;
+}
+
+.t-onyx .profile-image-placeholder {
+    width: 110px;
+    height: 110px;
+    border-radius: 20px;
+    background: #1e293b;
+    border: 2px solid #38bdf8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+.t-onyx .profile-image-placeholder i,
+.t-onyx .profile-image-placeholder svg {
+    color: #38bdf8 !important;
+    width: 50px;
+    height: 50px;
+}
+
+.t-onyx .header-main h1 {
+    font-size: 48px;
+    font-weight: 900;
+    color: #ffffff;
+    letter-spacing: -0.05em;
+    line-height: 1;
+    margin: 0;
+}
+
+.t-onyx .header-main .sub-title {
+    font-size: 18px;
+    color: #38bdf8;
+    font-weight: 700;
+    margin-top: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+}
+
+.t-onyx .header-contact {
+    text-align: right;
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.8);
+    position: relative;
+    z-index: 1;
+    padding-bottom: 5px;
+}
+
+.t-onyx .contact-item {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-bottom: 5px;
+}
+
+.t-onyx .contact-item i,
+.t-onyx .contact-item svg {
+    color: #38bdf8 !important;
+    width: 14px;
+}
+
+.t-onyx .cv-body {
+    padding: 60px 50px;
+    display: grid;
+    grid-template-columns: 2.2fr 1fr;
+    gap: 60px;
+}
+
+.t-onyx .cv-section {
+    margin-bottom: 45px;
+}
+
+.t-onyx .cv-section h3 {
+    font-size: 11px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: #0f172a;
+    background: #f1f5f9;
+    padding: 6px 16px;
+    border-radius: 4px;
+    width: fit-content;
+    margin-bottom: 30px;
+}
+
+.t-onyx .cv-section h3::before {
+    display: none;
+}
+
+.t-onyx .cv-divider {
+    display: none;
+}
+
+/* Timeline style for Experience items */
+.t-onyx .preview-item {
+    position: relative;
+    padding-left: 25px;
+    border-left: 2px solid #e2e8f0;
+    margin-bottom: 35px;
+}
+
+.t-onyx .preview-item::before {
+    content: '';
+    position: absolute;
+    top: 5px;
+    left: -7px;
+    width: 12px;
+    height: 12px;
+    background: #0f172a;
+    border: 3px solid #ffffff;
+    border-radius: 50%;
+    z-index: 10;
+}
+
+.t-onyx .p-item-title {
+    font-size: 19px;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 4px;
+}
+
+.t-onyx .p-item-subtitle {
+    font-size: 15px;
+    font-weight: 700;
+    color: #38bdf8;
+    margin-bottom: 12px;
+}
+
+.t-onyx .p-item-dates {
+    font-size: 11px;
+    font-weight: 800;
+    color: #64748b;
+    background: #f8fafc;
+    padding: 3px 10px;
+    border-radius: 6px;
+}
+
+.t-onyx .p-item-desc {
+    font-size: 14.5px;
+    color: #475569;
+    line-height: 1.7;
+}
+
+/* Skills as clean minimal chips */
+.t-onyx .skill-tag {
+    background: #ffffff;
+    color: #0f172a;
+    border: 1px solid #e2e8f0;
+    font-weight: 700;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 11px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.t-onyx .cv-footer {
+    border-top: 1px solid #f1f5f9;
+    padding: 40px 50px;
+    margin-top: 20px;
+}
+
+/* ==========================================================================
+   9. PRINT OPTIMIZATION
+   ========================================================================== */
 @media print {
     body {
         background: white;
@@ -908,7 +911,8 @@ textarea:focus {
 
     .app-header,
     .editor-pane,
-    .preview-header {
+    .preview-header,
+    .page-break-indicator {
         display: none !important;
     }
 
@@ -925,9 +929,5 @@ textarea:focus {
         box-shadow: none;
         width: 100%;
         transform: none !important;
-    }
-
-    .cv-document::after {
-        display: none !important;
     }
 }

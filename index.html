@@ -27,9 +27,10 @@
                 <span>Archi<b>CV</b></span>
             </div>
             <div class="template-switcher">
-                <button class="btn-template active" data-template="modern">Modern</button>
-                <button class="btn-template" data-template="designer">Executive</button>
-                <button class="btn-template" data-template="creative">Creative</button>
+                <button type="button" class="btn-template active" data-template="modern">Modern</button>
+                <button type="button" class="btn-template" data-template="designer">Executive</button>
+                <button type="button" class="btn-template" data-template="creative">Creative</button>
+                <button type="button" class="btn-template" data-template="onyx">Onyx Elite</button>
             </div>
             <div class="actions">
                 <button id="reset-btn" class="btn btn-outline">
@@ -114,17 +115,45 @@
                             </div>
                         </section>
 
-                        <!-- Skills -->
-                        <section class="form-section" id="skills-section">
+                        <!-- Skills Categories -->
+                        <section class="form-section">
                             <div class="section-header">
                                 <h2 class="section-title"><i data-lucide="award"></i> Skills</h2>
                                 <button type="button" class="btn-add" id="add-skill">
                                     <i data-lucide="plus-circle"></i> Add
                                 </button>
                             </div>
-                            <div id="skills-list" class="dynamic-list-chips">
-                                <!-- Skill chips will be added here -->
+                            <div id="skills-list" class="dynamic-list-chips"></div>
+                        </section>
+
+                        <section class="form-section">
+                            <div class="section-header">
+                                <h2 class="section-title"><i data-lucide="layout"></i> Product & POS Systems</h2>
+                                <button type="button" class="btn-add" id="add-pos">
+                                    <i data-lucide="plus-circle"></i> Add
+                                </button>
                             </div>
+                            <div id="pos-list" class="dynamic-list-chips"></div>
+                        </section>
+
+                        <section class="form-section">
+                            <div class="section-header">
+                                <h2 class="section-title"><i data-lucide="wrench"></i> Tools</h2>
+                                <button type="button" class="btn-add" id="add-tool">
+                                    <i data-lucide="plus-circle"></i> Add
+                                </button>
+                            </div>
+                            <div id="tools-list" class="dynamic-list-chips"></div>
+                        </section>
+
+                        <section class="form-section">
+                            <div class="section-header">
+                                <h2 class="section-title"><i data-lucide="check-circle"></i> Product & Testing</h2>
+                                <button type="button" class="btn-add" id="add-testing">
+                                    <i data-lucide="plus-circle"></i> Add
+                                </button>
+                            </div>
+                            <div id="testing-list" class="dynamic-list-chips"></div>
                         </section>
 
                         <!-- Languages -->
@@ -136,6 +165,10 @@
                             </div>
                         </section>
                     </form>
+
+                    <footer class="app-sidebar-footer">
+                        <p>© 2026 Hamed Khomjani • Released under MIT License</p>
+                    </footer>
                 </div>
             </aside>
 
@@ -203,9 +236,22 @@
                             <div class="cv-col-side">
                                 <div class="cv-section" id="p-skills-sect">
                                     <h3>Skills</h3>
-                                    <div id="preview-skills-list" class="skills-grid">
-                                        <!-- Skills items -->
-                                    </div>
+                                    <div id="preview-skills-list" class="skills-grid"></div>
+                                </div>
+
+                                <div class="cv-section" id="p-pos-sect">
+                                    <h3>Product & POS Systems</h3>
+                                    <div id="preview-pos-list" class="skills-grid"></div>
+                                </div>
+
+                                <div class="cv-section" id="p-tools-sect">
+                                    <h3>Tools</h3>
+                                    <div id="preview-tools-list" class="skills-grid"></div>
+                                </div>
+
+                                <div class="cv-section" id="p-testing-sect">
+                                    <h3>Product & Testing</h3>
+                                    <div id="preview-testing-list" class="skills-grid"></div>
                                 </div>
 
                                 <div class="cv-section" id="p-languages-sect">
@@ -219,7 +265,7 @@
                         <div class="cv-footer">
                             <div class="footer-line"></div>
                             <div class="footer-content">
-                                <p>Generated by <b>ArchiCV</b> • Design and developed by Hamed Khomjani</p>
+                                <p>Generated by <b>ArchiCV</b> • Design and developed by <b>Hamed Khomjani</b></p>
                             </div>
                         </div>
 
