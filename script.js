@@ -192,10 +192,17 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             skillsList.innerHTML = '';
-            data.skills.forEach(skill => {
-                createItem(skillTemplate, skillsList);
-                skillsList.lastElementChild.querySelector('.skill-name').value = skill || '';
-            });
+            if (Array.isArray(data.skills)) {
+                data.skills.forEach(skill => {
+                    if (skill) {
+                        createItem(skillTemplate, skillsList);
+                        const last = skillsList.lastElementChild;
+                        const input = last.querySelector('.skill-name');
+                        // Ensure it's a string even if corrupted data exists in localStorage
+                        input.value = (typeof skill === 'object' ? (skill.name || skill.skill || '') : skill) || '';
+                    }
+                });
+            }
 
             updatePreview();
 
@@ -290,7 +297,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         items.forEach(item => {
             const val = item.value.trim();
-            if (val) {
+            if (val && val !== '[object Object]') {
                 const span = document.createElement('span');
                 span.className = 'skill-tag';
                 span.textContent = val;
@@ -390,7 +397,7 @@ document.addEventListener('DOMContentLoaded', () => {
         jobTitleInput.value = "UX/UI Designer";
         emailInput.value = "eng.h.khomjani@gmail.com";
         phoneInput.value = "0762573273";
-        location.value = "Älvsjö, Stockholm"; // Simplified for layout
+        locationInput.value = "Älvsjö, Stockholm"; // Fixed: Use locationInput instead of global location
         linkedinInput.value = "behance.net/hamedkhomjanidesign";
         summaryInput.value = "Dynamic UX/UI Designer with a proven track record at Purspot AB, enhancing user engagement through innovative design and responsive platforms. Expert in Figma and adept at fostering collaboration, I've significantly streamlined workflows and improved productivity. My designs, grounded in UX research, elevate usability and aesthetics, consistently meeting project goals.";
         languagesInput.value = "Persian (Native), English (C1), Swedish (A2), German (A2)";
