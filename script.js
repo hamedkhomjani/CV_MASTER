@@ -200,24 +200,56 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /**
-     * Saves current form state to localStorage
+     * Saves current form state to localStorage AND the local server
      */
-    function saveData() {
+    async function saveData() {
         const data = getFormData();
+        
+        // Save to browser (backup)
         localStorage.setItem('archicv-data', JSON.stringify(data));
+
+        // Save to Local Database (File)
+        try {
+            await fetch('/api/cv-data', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+        } catch (e) {
+            console.warn("Server save failed, using local storage only.", e);
+        }
     }
 
     /**
-     * Loads form state from localStorage
-     * Returns true if data was found and loaded
+     * Loads form state from server or localStorage
      */
-    function loadData() {
-        const savedData = localStorage.getItem('archicv-data');
-        if (!savedData) return false;
+    async function loadData() {
+        let data = null;
+
+        // 1. Try to load from Server first
+        try {
+            const response = await fetch('/api/cv-data');
+            if (response.ok) {
+                const serverData = await response.json();
+                if (serverData && Object.keys(serverData).length > 0) {
+                    data = serverData;
+                }
+            }
+        } catch (e) {
+            console.warn("Server load failed, falling back to local storage.", e);
+        }
+
+        // 2. Fallback to localStorage
+        if (!data) {
+            const savedData = localStorage.getItem('archicv-data');
+            if (savedData) {
+                try { data = JSON.parse(savedData); } catch (e) {}
+            }
+        }
+
+        if (!data) return false;
 
         try {
-            const data = JSON.parse(savedData);
-
             // Personal Info
             fullNameInput.value = data.personal.fullName || '';
             jobTitleInput.value = data.personal.jobTitle || '';
@@ -587,7 +619,9 @@ document.addEventListener('DOMContentLoaded', () => {
         adjustScaling();
     }
 
-    if (!loadData()) {
-        addInitialData();
-    }
+    (async () => {
+        if (!await loadData()) {
+            addInitialData();
+        }
+    })();
 });
