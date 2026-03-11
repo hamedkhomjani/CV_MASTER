@@ -2,6 +2,42 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize Lucide Icons
     lucide.createIcons();
 
+    // ─────────────────────────────────────────────
+    // PHOTO UPLOAD
+    // ─────────────────────────────────────────────
+    const photoInput = document.getElementById('photo-input');
+    const photoPreview = document.getElementById('photo-preview');
+    const photoUploadPlaceholder = document.getElementById('photo-upload-placeholder');
+    const cvPhoto = document.getElementById('cv-photo');
+    const cvPhotoIcon = document.getElementById('cv-photo-icon');
+
+    function applyPhoto(dataUrl) {
+        // Form sidebar preview
+        photoPreview.src = dataUrl;
+        photoPreview.style.display = 'block';
+        photoUploadPlaceholder.style.display = 'none';
+
+        // CV preview
+        cvPhoto.src = dataUrl;
+        cvPhoto.style.display = 'block';
+        cvPhotoIcon.style.display = 'none';
+
+        // Save to localStorage
+        try { localStorage.setItem('archicv-photo', dataUrl); } catch (e) { }
+    }
+
+    photoInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => applyPhoto(ev.target.result);
+        reader.readAsDataURL(file);
+    });
+
+    // Load saved photo if exists
+    const savedPhoto = localStorage.getItem('archicv-photo');
+    if (savedPhoto) applyPhoto(savedPhoto);
+
     // Elements
     const cvForm = document.getElementById('cv-form');
     const downloadBtn = document.getElementById('download-btn');
@@ -403,24 +439,43 @@ document.addEventListener('DOMContentLoaded', () => {
     downloadBtn.addEventListener('click', () => {
         const fileName = (fullNameInput.value || 'Resume').replace(/\s+/g, '_') + '.pdf';
 
+        // ─── Step 1: Remove CSS scale so html2pdf captures real size ───
+        const savedTransform = cvPreview.style.transform;
+        const savedWidth = cvPreview.style.width;
+        cvPreview.style.transform = 'none';
+        cvPreview.style.width = '210mm';
+
         const opt = {
-            margin: [15, 0, 15, 0], // Top, Left, Bottom, Right
+            margin: 0,
             filename: fileName,
             image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2, useCORS: true },
+            html2canvas: {
+                scale: 2,
+                useCORS: true,
+                allowTaint: true,
+                backgroundColor: '#ffffff',
+                logging: false
+            },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-            pagebreak: { mode: 'css' }
+            pagebreak: { mode: ['css', 'legacy'] }
         };
 
-        // Briefly remove transform for clean capture if needed, 
-        // but html2pdf handles standard layout well.
-        html2pdf().from(cvPreview).set(opt).save();
+        // ─── Step 2: Generate PDF, then restore transform ───
+        html2pdf()
+            .set(opt)
+            .from(cvPreview)
+            .save()
+            .then(() => {
+                cvPreview.style.transform = savedTransform;
+                cvPreview.style.width = savedWidth;
+            });
     });
 
     // Reset Data
     resetBtn.addEventListener('click', () => {
         if (confirm("Reset to default content? This will clear all your current data.")) {
             localStorage.removeItem('archicv-data');
+            localStorage.removeItem('archicv-photo');
             location.reload();
         }
     });
