@@ -413,10 +413,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let draggedElement = null;
 
     function handleDragStart(e) {
-        if (!e.target.closest('.drag-handle')) {
-            e.preventDefault();
-            return;
-        }
         draggedElement = this;
         this.classList.add('dragging');
         e.dataTransfer.effectAllowed = 'move';
@@ -530,11 +526,23 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
+        // Enable dragging ONLY via handle
+        const handle = sect.querySelector('.drag-handle');
+        handle.addEventListener('mousedown', () => {
+            sect.setAttribute('draggable', 'true');
+        });
+        handle.addEventListener('mouseup', () => {
+            sect.setAttribute('draggable', 'false');
+        });
+
         sect.addEventListener('dragstart', handleDragStart);
         sect.addEventListener('dragover', handleDragOver);
         sect.addEventListener('dragleave', handleDragLeave);
         sect.addEventListener('drop', handleDrop);
-        sect.addEventListener('dragend', handleDragEnd);
+        sect.addEventListener('dragend', () => {
+            handleDragEnd.call(sect);
+            sect.setAttribute('draggable', 'false');
+        });
 
         customSectionsContainer.appendChild(clone);
         lucide.createIcons();
