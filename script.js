@@ -67,22 +67,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // Lists
     const experienceList = document.getElementById('experience-list');
     const educationList = document.getElementById('education-list');
-    const skillsList = document.getElementById('skills-list');
-    const posList = document.getElementById('pos-list');
-    const toolsList = document.getElementById('tools-list');
-    const testingList = document.getElementById('testing-list');
+    const customSectionsContainer = document.getElementById('custom-sections-container');
 
     const previewExperienceList = document.getElementById('preview-experience-list');
     const previewEducationList = document.getElementById('preview-education-list');
-    const previewSkillsList = document.getElementById('preview-skills-list');
-    const previewPosList = document.getElementById('preview-pos-list');
-    const previewToolsList = document.getElementById('preview-tools-list');
-    const previewTestingList = document.getElementById('preview-testing-list');
+    const previewCustomSectionsList = document.getElementById('preview-custom-sections');
 
     // Templates
     const expTemplate = document.getElementById('experience-item-template');
     const eduTemplate = document.getElementById('education-item-template');
     const skillTemplate = document.getElementById('skill-item-template');
+    const sectionTemplate = document.getElementById('custom-section-template');
 
     // --- Core Functions ---
 
@@ -125,10 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Update Dynamic Sections
         updateExperiencePreview();
         updateEducationPreview();
-        updateSkillsPreview(skillsList, previewSkillsList, 'p-skills-sect');
-        updateSkillsPreview(posList, previewPosList, 'p-pos-sect');
-        updateSkillsPreview(toolsList, previewToolsList, 'p-tools-sect');
-        updateSkillsPreview(testingList, previewTestingList, 'p-testing-sect');
+        updateCustomSectionsPreview();
 
         // Refresh icons in preview (since they might be hidden/shown)
         lucide.createIcons();
@@ -154,10 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
             },
             experience: [],
             education: [],
-            skills: [],
-            pos: [],
-            tools: [],
-            testing: []
+            customSections: []
         };
 
         // Experience
@@ -179,18 +168,20 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
-        // Skills
-        skillsList.querySelectorAll('.skill-name').forEach(item => {
-            data.skills.push(item.value);
-        });
-        posList.querySelectorAll('.skill-name').forEach(item => {
-            data.pos.push(item.value);
-        });
-        toolsList.querySelectorAll('.skill-name').forEach(item => {
-            data.tools.push(item.value);
-        });
-        testingList.querySelectorAll('.skill-name').forEach(item => {
-            data.testing.push(item.value);
+        // Custom Sections
+        customSectionsContainer.querySelectorAll('.custom-form-section').forEach(sect => {
+            const sectionId = sect.dataset.id || `sect-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+            const title = sect.querySelector('.section-title-input').value;
+            const items = [];
+            sect.querySelectorAll('.skill-name').forEach(input => {
+                if (input.value.trim()) items.push(input.value.trim());
+            });
+            
+            data.customSections.push({
+                id: sectionId,
+                title: title,
+                items: items
+            });
         });
 
         const activeBtn = document.querySelector('.btn-template.active');
@@ -280,48 +271,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 last.querySelector('.edu-dates').value = edu.dates || '';
             });
 
-            skillsList.innerHTML = '';
-            if (Array.isArray(data.skills)) {
-                data.skills.forEach(skill => {
-                    if (skill) {
-                        createItem(skillTemplate, skillsList);
-                        const last = skillsList.lastElementChild;
-                        last.querySelector('.skill-name').value = (typeof skill === 'object' ? (skill.name || skill.skill || '') : skill) || '';
-                    }
+            // Handle legacy data structure or new customSections
+            customSectionsContainer.innerHTML = '';
+            if (data.customSections && Array.isArray(data.customSections)) {
+                data.customSections.forEach(sectData => {
+                    createCustomSection(sectData);
                 });
-            }
-
-            posList.innerHTML = '';
-            if (Array.isArray(data.pos)) {
-                data.pos.forEach(skill => {
-                    if (skill) {
-                        createItem(skillTemplate, posList);
-                        const last = posList.lastElementChild;
-                        last.querySelector('.skill-name').value = (typeof skill === 'object' ? (skill.name || skill.skill || '') : skill) || '';
-                    }
-                });
-            }
-
-            toolsList.innerHTML = '';
-            if (Array.isArray(data.tools)) {
-                data.tools.forEach(skill => {
-                    if (skill) {
-                        createItem(skillTemplate, toolsList);
-                        const last = toolsList.lastElementChild;
-                        last.querySelector('.skill-name').value = (typeof skill === 'object' ? (skill.name || skill.skill || '') : skill) || '';
-                    }
-                });
-            }
-
-            testingList.innerHTML = '';
-            if (Array.isArray(data.testing)) {
-                data.testing.forEach(skill => {
-                    if (skill) {
-                        createItem(skillTemplate, testingList);
-                        const last = testingList.lastElementChild;
-                        last.querySelector('.skill-name').value = (typeof skill === 'object' ? (skill.name || skill.skill || '') : skill) || '';
-                    }
-                });
+            } else {
+                // Compatibility with old structure (skills, pos, tools, testing)
+                if (data.skills) createCustomSection({ title: 'Skills', items: data.skills });
+                if (data.pos) createCustomSection({ title: 'Product & POS Systems', items: data.pos });
+                if (data.tools) createCustomSection({ title: 'Tools', items: data.tools });
+                if (data.testing) createCustomSection({ title: 'Product & Testing', items: data.testing });
             }
 
             updatePreview();
@@ -411,26 +372,46 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('p-education-sect').style.display = previewEducationList.children.length > 0 ? 'block' : 'none';
     }
 
-    function updateSkillsPreview(listElement, previewElement, sectionId) {
-        const items = listElement.querySelectorAll('.skill-name');
-        previewElement.innerHTML = '';
+    function updateCustomSectionsPreview() {
+        previewCustomSectionsList.innerHTML = '';
+        const sections = customSectionsContainer.querySelectorAll('.custom-form-section');
 
-        items.forEach(item => {
-            const val = item.value.trim();
-            if (val && val !== '[object Object]') {
-                const span = document.createElement('span');
-                span.className = 'skill-tag';
-                span.textContent = val;
-                previewElement.appendChild(span);
+        sections.forEach(sect => {
+            const title = sect.querySelector('.section-title-input').value.trim();
+            const items = sect.querySelectorAll('.skill-name');
+            
+            let hasContent = false;
+            const previewSect = document.createElement('div');
+            previewSect.className = 'cv-section';
+            
+            const h3 = document.createElement('h3');
+            h3.textContent = title || 'Unnamed Section';
+            previewSect.appendChild(h3);
+
+            const grid = document.createElement('div');
+            grid.className = 'skills-grid';
+            
+            items.forEach(item => {
+                const val = item.value.trim();
+                if (val && val !== '[object Object]') {
+                    hasContent = true;
+                    const span = document.createElement('span');
+                    span.className = 'skill-tag';
+                    span.textContent = val;
+                    grid.appendChild(span);
+                }
+            });
+
+            if (hasContent) {
+                previewSect.appendChild(grid);
+                previewCustomSectionsList.appendChild(previewSect);
             }
         });
-
-        document.getElementById(sectionId).style.display = previewElement.children.length > 0 ? 'block' : 'none';
     }
 
     // --- Dynamic Item Management ---
 
-    function createItem(template, container, updateFn) {
+    function createItem(template, container) {
         const clone = template.content.cloneNode(true);
         const item = clone.querySelector('.dynamic-item') || clone.querySelector('.skill-input-wrap');
 
@@ -452,6 +433,42 @@ document.addEventListener('DOMContentLoaded', () => {
         updatePreview();
     }
 
+    function createCustomSection(data = { title: '', items: [] }) {
+        const clone = sectionTemplate.content.cloneNode(true);
+        const sect = clone.querySelector('.custom-form-section');
+        const titleInput = sect.querySelector('.section-title-input');
+        const itemsList = sect.querySelector('.section-items-list');
+        const addBtn = sect.querySelector('.add-skill-item');
+        const removeSectBtn = sect.querySelector('.btn-remove-section');
+
+        titleInput.value = data.title;
+        titleInput.addEventListener('input', updatePreview);
+
+        addBtn.addEventListener('click', () => {
+            createItem(skillTemplate, itemsList);
+        });
+
+        removeSectBtn.addEventListener('click', () => {
+            if (confirm(`Remove entire "${titleInput.value || 'section'}" section?`)) {
+                sect.remove();
+                updatePreview();
+            }
+        });
+
+        // Add items if provided
+        if (data.items && Array.isArray(data.items)) {
+            data.items.forEach(val => {
+                createItem(skillTemplate, itemsList);
+                const last = itemsList.lastElementChild;
+                last.querySelector('.skill-name').value = (typeof val === 'object' ? (val.name || val.skill || '') : val) || '';
+            });
+        }
+
+        customSectionsContainer.appendChild(clone);
+        lucide.createIcons();
+        updatePreview();
+    }
+
     // --- Event Listeners ---
 
     // Static Inputs
@@ -462,14 +479,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // Add Buttons
     document.getElementById('add-experience').addEventListener('click', () => createItem(expTemplate, experienceList));
     document.getElementById('add-education').addEventListener('click', () => createItem(eduTemplate, educationList));
-    document.getElementById('add-skill').addEventListener('click', () => createItem(skillTemplate, skillsList));
-    document.getElementById('add-pos').addEventListener('click', () => createItem(skillTemplate, posList));
-    document.getElementById('add-tool').addEventListener('click', () => createItem(skillTemplate, toolsList));
-    document.getElementById('add-testing').addEventListener('click', () => createItem(skillTemplate, testingList));
+    document.getElementById('add-new-section').addEventListener('click', () => createCustomSection());
 
     // PDF Download
     downloadBtn.addEventListener('click', () => {
-        const fileName = (fullNameInput.value || 'Resume').replace(/\s+/g, '_') + '.pdf';
+        const namePart = (fullNameInput.value || 'Resume').trim().replace(/\s+/g, '_');
+        const titlePart = (jobTitleInput.value || '').trim().replace(/\s+/g, '_');
+        const fileName = (titlePart ? `${namePart}_${titlePart}` : namePart) + '.pdf';
 
         // ─── Step 1: Remove CSS scale so html2pdf captures real size ───
         const savedTransform = cvPreview.style.transform;
@@ -539,7 +555,7 @@ document.addEventListener('DOMContentLoaded', () => {
         jobTitleInput.value = "UX/UI Designer";
         emailInput.value = "eng.h.khomjani@gmail.com";
         phoneInput.value = "0762573273";
-        locationInput.value = "Älvsjö, Stockholm"; // Fixed: Use locationInput instead of global location
+        locationInput.value = "Älvsjö, Stockholm"; 
         linkedinInput.value = "behance.net/hamedkhomjanidesign";
         summaryInput.value = "Dynamic UX/UI Designer with a proven track record at Purspot AB, enhancing user engagement through innovative design and responsive platforms. Expert in Figma and adept at fostering collaboration, I've significantly streamlined workflows and improved productivity. My designs, grounded in UX research, elevate usability and aesthetics, consistently meeting project goals.";
         languagesInput.value = "Persian (Native), English (C1), Swedish (A2), German (A2)";
@@ -590,28 +606,25 @@ document.addEventListener('DOMContentLoaded', () => {
             last.querySelector('.edu-dates').value = edu.dates;
         });
 
-        // Skills
-        ['UX Research', 'Wireframing', 'Prototyping', 'Lean UX', 'Information Architecture', 'Visual Design'].forEach(s => {
-            createItem(skillTemplate, skillsList);
-            skillsList.lastElementChild.querySelector('.skill-name').value = s;
+        // Custom Sections
+        createCustomSection({
+            title: 'Skills',
+            items: ['UX Research', 'Wireframing', 'Prototyping', 'Lean UX', 'Information Architecture', 'Visual Design']
         });
 
-        // Product & POS Systems
-        ['Purspot POS', 'Retail Management', 'Inventory Systems', 'Payment Gateways'].forEach(s => {
-            createItem(skillTemplate, posList);
-            posList.lastElementChild.querySelector('.skill-name').value = s;
+        createCustomSection({
+            title: 'Product & POS Systems',
+            items: ['Purspot POS', 'Retail Management', 'Inventory Systems', 'Payment Gateways']
         });
 
-        // Tools
-        ['Figma', 'Adobe XD', 'Rhino (3D)', 'Miro', 'Hotjar'].forEach(s => {
-            createItem(skillTemplate, toolsList);
-            toolsList.lastElementChild.querySelector('.skill-name').value = s;
+        createCustomSection({
+            title: 'Tools',
+            items: ['Figma', 'Adobe XD', 'Rhino (3D)', 'Miro', 'Hotjar']
         });
 
-        // Product & Testing
-        ['Manual Testing', 'User Acceptance Testing (UAT)', 'A/B Testing', 'HTML/CSS/JS'].forEach(s => {
-            createItem(skillTemplate, testingList);
-            testingList.lastElementChild.querySelector('.skill-name').value = s;
+        createCustomSection({
+            title: 'Product & Testing',
+            items: ['Manual Testing', 'User Acceptance Testing (UAT)', 'A/B Testing', 'HTML/CSS/JS']
         });
 
         // Update all

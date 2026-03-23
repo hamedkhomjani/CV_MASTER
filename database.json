@@ -46,32 +46,50 @@
       "dates": "2014"
     }
   ],
-  "skills": [
-    "UX Research",
-    "Wireframing",
-    "Prototyping",
-    "Lean UX",
-    "Information Architecture",
-    "Visual Design"
-  ],
-  "pos": [
-    "Purspot POS",
-    "Retail Management",
-    "Inventory Systems",
-    "Payment Gateways"
-  ],
-  "tools": [
-    "Figma",
-    "Adobe XD",
-    "Rhino (3D)",
-    "Miro",
-    "Hotjar"
-  ],
-  "testing": [
-    "Manual Testing",
-    "User Acceptance Testing (UAT)",
-    "A/B Testing",
-    "HTML/CSS/JS"
+  "customSections": [
+    {
+      "id": "skills",
+      "title": "Skills",
+      "items": [
+        "UX Research",
+        "Wireframing",
+        "Prototyping",
+        "Lean UX",
+        "Information Architecture",
+        "Visual Design"
+      ]
+    },
+    {
+      "id": "pos",
+      "title": "Product & POS Systems",
+      "items": [
+        "Purspot POS",
+        "Retail Management",
+        "Inventory Systems",
+        "Payment Gateways"
+      ]
+    },
+    {
+      "id": "tools",
+      "title": "Tools",
+      "items": [
+        "Figma",
+        "Adobe XD",
+        "Rhino (3D)",
+        "Miro",
+        "Hotjar"
+      ]
+    },
+    {
+      "id": "testing",
+      "title": "Product & Testing",
+      "items": [
+        "Manual Testing",
+        "User Acceptance Testing (UAT)",
+        "A/B Testing",
+        "HTML/CSS/JS"
+      ]
+    }
   ],
   "template": "designer"
 }

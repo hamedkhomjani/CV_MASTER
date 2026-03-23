@@ -129,46 +129,16 @@
                             </div>
                         </section>
 
-                        <!-- Skills Categories -->
-                        <section class="form-section">
-                            <div class="section-header">
-                                <h2 class="section-title"><i data-lucide="award"></i> Skills</h2>
-                                <button type="button" class="btn-add" id="add-skill">
-                                    <i data-lucide="plus-circle"></i> Add
-                                </button>
-                            </div>
-                            <div id="skills-list" class="dynamic-list-chips"></div>
-                        </section>
+                        <!-- Dynamic Custom Sections -->
+                        <div id="custom-sections-container">
+                            <!-- Dynamic sections will be injected here -->
+                        </div>
 
-                        <section class="form-section">
-                            <div class="section-header">
-                                <h2 class="section-title"><i data-lucide="layout"></i> Product & POS Systems</h2>
-                                <button type="button" class="btn-add" id="add-pos">
-                                    <i data-lucide="plus-circle"></i> Add
-                                </button>
-                            </div>
-                            <div id="pos-list" class="dynamic-list-chips"></div>
-                        </section>
-
-                        <section class="form-section">
-                            <div class="section-header">
-                                <h2 class="section-title"><i data-lucide="wrench"></i> Tools</h2>
-                                <button type="button" class="btn-add" id="add-tool">
-                                    <i data-lucide="plus-circle"></i> Add
-                                </button>
-                            </div>
-                            <div id="tools-list" class="dynamic-list-chips"></div>
-                        </section>
-
-                        <section class="form-section">
-                            <div class="section-header">
-                                <h2 class="section-title"><i data-lucide="check-circle"></i> Product & Testing</h2>
-                                <button type="button" class="btn-add" id="add-testing">
-                                    <i data-lucide="plus-circle"></i> Add
-                                </button>
-                            </div>
-                            <div id="testing-list" class="dynamic-list-chips"></div>
-                        </section>
+                        <div class="form-section-actions">
+                            <button type="button" class="btn btn-outline btn-full" id="add-new-section">
+                                <i data-lucide="plus"></i> Add New Section (Skills, Tools, etc.)
+                            </button>
+                        </div>
 
                         <!-- Languages -->
                         <section class="form-section">
@@ -250,24 +220,8 @@
 
                             <!-- Right Column (Sidebar) -->
                             <div class="cv-col-side">
-                                <div class="cv-section" id="p-skills-sect">
-                                    <h3>Skills</h3>
-                                    <div id="preview-skills-list" class="skills-grid"></div>
-                                </div>
-
-                                <div class="cv-section" id="p-pos-sect">
-                                    <h3>Product & POS Systems</h3>
-                                    <div id="preview-pos-list" class="skills-grid"></div>
-                                </div>
-
-                                <div class="cv-section" id="p-tools-sect">
-                                    <h3>Tools</h3>
-                                    <div id="preview-tools-list" class="skills-grid"></div>
-                                </div>
-
-                                <div class="cv-section" id="p-testing-sect">
-                                    <h3>Product & Testing</h3>
-                                    <div id="preview-testing-list" class="skills-grid"></div>
+                                <div id="preview-custom-sections">
+                                    <!-- Dynamic preview sections will be injected here -->
                                 </div>
 
                                 <div class="cv-section" id="p-languages-sect">
@@ -325,9 +279,26 @@
 
     <template id="skill-item-template">
         <div class="skill-input-wrap">
-            <input type="text" class="skill-name" placeholder="Skill (e.g., JavaScript)">
+            <input type="text" class="skill-name" placeholder="Item (e.g., Figma)">
             <button type="button" class="btn-remove-sm"><i data-lucide="x"></i></button>
         </div>
+    </template>
+
+    <template id="custom-section-template">
+        <section class="form-section custom-form-section" data-id="">
+            <div class="section-header">
+                <input type="text" class="section-title-input" placeholder="Section Title (e.g. Tools)">
+                <div class="section-actions">
+                    <button type="button" class="btn-add add-skill-item">
+                        <i data-lucide="plus-circle"></i> Add Item
+                    </button>
+                    <button type="button" class="btn-remove-section" title="Remove entire section">
+                        <i data-lucide="trash-2"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="dynamic-list-chips section-items-list"></div>
+        </section>
     </template>
 
     <script src="script.js"></script>
