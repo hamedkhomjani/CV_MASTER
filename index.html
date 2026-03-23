@@ -135,7 +135,7 @@
                         </div>
 
                         <div class="form-section-actions">
-                            <button type="button" class="btn btn-outline btn-full" id="add-new-section">
+                            <button type="button" class="btn btn-dashed btn-full" id="add-new-section">
                                 <i data-lucide="plus"></i> Add New Section (Skills, Tools, etc.)
                             </button>
                         </div>
@@ -291,16 +291,16 @@
                     <i data-lucide="grip-vertical"></i>
                 </div>
                 <input type="text" class="section-title-input" placeholder="Section Title (e.g. Tools)">
-                <div class="section-actions">
-                    <button type="button" class="btn-add add-skill-item">
-                        <i data-lucide="plus-circle"></i> Add Item
-                    </button>
-                    <button type="button" class="btn-remove-section" title="Remove entire section">
-                        <i data-lucide="trash-2"></i>
-                    </button>
-                </div>
+                <button type="button" class="btn-remove-section" title="Remove entire section">
+                    <i data-lucide="trash-2"></i>
+                </button>
             </div>
             <div class="dynamic-list-chips section-items-list"></div>
+            <div class="section-footer-actions">
+                <button type="button" class="btn-add add-skill-item">
+                    <i data-lucide="plus-circle"></i> Add Item
+                </button>
+            </div>
         </section>
     </template>
 
