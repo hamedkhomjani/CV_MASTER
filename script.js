@@ -424,6 +424,20 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.preventDefault) e.preventDefault();
         e.dataTransfer.dropEffect = 'move';
 
+        // Auto-scroll the editor container when dragging near edges
+        const editorScroll = document.querySelector('.editor-scroll');
+        if (editorScroll) {
+            const scrollThreshold = 80; // px from top/bottom to start scrolling
+            const scrollSpeed = 10;
+            const scrollRect = editorScroll.getBoundingClientRect();
+            
+            if (e.clientY < scrollRect.top + scrollThreshold) {
+                editorScroll.scrollTop -= scrollSpeed;
+            } else if (e.clientY > scrollRect.bottom - scrollThreshold) {
+                editorScroll.scrollTop += scrollSpeed;
+            }
+        }
+
         // Add visual indicator class to the target
         const target = e.target.closest('.custom-form-section');
         if (target && target !== draggedElement) {
