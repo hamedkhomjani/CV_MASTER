@@ -245,10 +245,33 @@ body {
     background: #fef2f2;
 }
 
-.section-actions {
+.dragging {
+    opacity: 0.4;
+    border: 2px dashed var(--primary);
+    background: #f1f5f9;
+}
+
+.drag-handle {
+    cursor: grab;
+    color: var(--secondary);
     display: flex;
     align-items: center;
-    gap: 8px;
+    padding: 4px;
+    border-radius: 4px;
+    transition: 0.2s;
+}
+
+.drag-handle:active {
+    cursor: grabbing;
+}
+
+.drag-handle:hover {
+    background: #f1f5f9;
+    color: var(--primary);
+}
+
+.drag-over {
+    border-top: 3px solid var(--primary);
 }
 
 .section-title-input {

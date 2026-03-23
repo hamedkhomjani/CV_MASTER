@@ -285,8 +285,11 @@
     </template>
 
     <template id="custom-section-template">
-        <section class="form-section custom-form-section" data-id="">
+        <section class="form-section custom-form-section" data-id="" draggable="true">
             <div class="section-header">
+                <div class="drag-handle" title="Drag to reorder section">
+                    <i data-lucide="grip-vertical"></i>
+                </div>
                 <input type="text" class="section-title-input" placeholder="Section Title (e.g. Tools)">
                 <div class="section-actions">
                     <button type="button" class="btn-add add-skill-item">

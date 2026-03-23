@@ -409,6 +409,72 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // --- Dynamic Item Management (Reordering) ---
+    let draggedElement = null;
+
+    function handleDragStart(e) {
+        if (!e.target.closest('.drag-handle')) {
+            e.preventDefault();
+            return;
+        }
+        draggedElement = this;
+        this.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+        // Required for Firefox
+        e.dataTransfer.setData('text/plain', '');
+    }
+
+    function handleDragOver(e) {
+        if (e.preventDefault) e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+
+        // Add visual indicator class to the target
+        const target = e.target.closest('.custom-form-section');
+        if (target && target !== draggedElement) {
+            target.classList.add('drag-over');
+        }
+
+        return false;
+    }
+
+    function handleDragLeave(e) {
+        const target = e.target.closest('.custom-form-section');
+        if (target) {
+            target.classList.remove('drag-over');
+        }
+    }
+
+    function handleDrop(e) {
+        if (e.stopPropagation) e.stopPropagation();
+        
+        const target = e.target.closest('.custom-form-section');
+        if (target) {
+            target.classList.remove('drag-over');
+        }
+
+        if (target && draggedElement !== target) {
+            const rect = target.getBoundingClientRect();
+            const midpoint = rect.top + rect.height / 2;
+            
+            // Reorder in DOM
+            if (e.clientY < midpoint) {
+                customSectionsContainer.insertBefore(draggedElement, target);
+            } else {
+                customSectionsContainer.insertBefore(draggedElement, target.nextSibling);
+            }
+            
+            updatePreview();
+        }
+        return false;
+    }
+
+    function handleDragEnd() {
+        this.classList.remove('dragging');
+        // Clean up any remaining drag-over classes
+        customSectionsContainer.querySelectorAll('.custom-form-section').forEach(s => s.classList.remove('drag-over'));
+        draggedElement = null;
+    }
+
     // --- Dynamic Item Management ---
 
     function createItem(template, container) {
@@ -463,6 +529,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 last.querySelector('.skill-name').value = (typeof val === 'object' ? (val.name || val.skill || '') : val) || '';
             });
         }
+
+        sect.addEventListener('dragstart', handleDragStart);
+        sect.addEventListener('dragover', handleDragOver);
+        sect.addEventListener('dragleave', handleDragLeave);
+        sect.addEventListener('drop', handleDrop);
+        sect.addEventListener('dragend', handleDragEnd);
 
         customSectionsContainer.appendChild(clone);
         lucide.createIcons();
