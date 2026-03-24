@@ -374,6 +374,30 @@ body {
     height: 14px;
 }
 
+.gap-item-wrap {
+    background: #f1f5f9;
+    border: 1px dashed #cbd5e1;
+}
+
+.gap-label {
+    font-size: 10px;
+    font-weight: 800;
+    color: #94a3b8;
+    letter-spacing: 1px;
+    padding-right: 8px;
+    user-select: none;
+}
+
+/* In Preview - Gap as an invisible item that takes up space */
+.skill-gap {
+    display: inline-block;
+    padding: 4px 12px; /* Same horizontal padding as skill-tag */
+    height: 21px;      /* Height of an empty tag */
+    min-width: 30px;   /* Reasonable minimum space */
+    visibility: hidden;
+    pointer-events: none;
+}
+
 .custom-form-section .section-header {
     display: flex;
     align-items: center;

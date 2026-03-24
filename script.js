@@ -77,6 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const expTemplate = document.getElementById('experience-item-template');
     const eduTemplate = document.getElementById('education-item-template');
     const skillTemplate = document.getElementById('skill-item-template');
+    const gapTemplate = document.getElementById('gap-item-template');
     const sectionTemplate = document.getElementById('custom-section-template');
 
     // --- Core Functions ---
@@ -173,8 +174,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const sectionId = sect.dataset.id || `sect-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
             const title = sect.querySelector('.section-title-input').value;
             const items = [];
-            sect.querySelectorAll('.skill-name').forEach(input => {
-                if (input.value.trim()) items.push(input.value.trim());
+            sect.querySelectorAll('.skill-input-wrap').forEach(wrap => {
+                const input = wrap.querySelector('.skill-name');
+                if (input) {
+                    if (input.value.trim()) items.push(input.value.trim());
+                } else if (wrap.dataset.isGap === 'true') {
+                    items.push('__GAP__');
+                }
             });
             
             data.customSections.push({
@@ -378,7 +384,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         sections.forEach(sect => {
             const title = sect.querySelector('.section-title-input').value.trim();
-            const items = sect.querySelectorAll('.skill-name');
+            const itemWraps = sect.querySelectorAll('.skill-input-wrap');
             
             let hasContent = false;
             const previewSect = document.createElement('div');
@@ -391,9 +397,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const grid = document.createElement('div');
             grid.className = 'skills-grid';
             
-            items.forEach(item => {
-                const val = item.value.trim();
-                if (val && val !== '[object Object]') {
+            itemWraps.forEach(wrap => {
+                const input = wrap.querySelector('.skill-name');
+                const val = input ? input.value.trim() : (wrap.dataset.isGap === 'true' ? '__GAP__' : '');
+                
+                if (val === '__GAP__') {
+                    const spacer = document.createElement('div');
+                    spacer.className = 'skill-gap';
+                    grid.appendChild(spacer);
+                } else if (val && val !== '[object Object]') {
                     hasContent = true;
                     const span = document.createElement('span');
                     span.className = 'skill-tag';
@@ -534,11 +546,20 @@ document.addEventListener('DOMContentLoaded', () => {
         // Add items if provided
         if (data.items && Array.isArray(data.items)) {
             data.items.forEach(val => {
-                createItem(skillTemplate, itemsList);
+                const itemType = (val === '__GAP__') ? gapTemplate : skillTemplate;
+                createItem(itemType, itemsList);
                 const last = itemsList.lastElementChild;
-                last.querySelector('.skill-name').value = (typeof val === 'object' ? (val.name || val.skill || '') : val) || '';
+                const input = last.querySelector('.skill-name');
+                if (input) {
+                    input.value = (typeof val === 'object' ? (val.name || val.skill || '') : val) || '';
+                }
             });
         }
+
+        const addGapBtn = sect.querySelector('.add-gap-item');
+        addGapBtn.addEventListener('click', () => {
+            createItem(gapTemplate, itemsList);
+        });
 
         // Enable dragging ONLY via handle
         const handle = sect.querySelector('.drag-handle');

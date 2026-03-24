@@ -277,6 +277,13 @@
         </div>
     </template>
 
+    <template id="gap-item-template">
+        <div class="skill-input-wrap gap-item-wrap" data-is-gap="true">
+            <div class="gap-label">--- GAP ---</div>
+            <button type="button" class="btn-remove-sm"><i data-lucide="x"></i></button>
+        </div>
+    </template>
+
     <template id="skill-item-template">
         <div class="skill-input-wrap">
             <input type="text" class="skill-name" placeholder="Item (e.g., Figma)">
@@ -299,6 +306,9 @@
             <div class="section-footer-actions">
                 <button type="button" class="btn-add add-skill-item">
                     <i data-lucide="plus-circle"></i> Add Item
+                </button>
+                <button type="button" class="btn-add add-gap-item" title="Add a line break between items">
+                    <i data-lucide="split"></i> Add Gap
                 </button>
             </div>
         </section>
