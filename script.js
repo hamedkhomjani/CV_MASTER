@@ -42,6 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const cvForm = document.getElementById('cv-form');
     const downloadBtn = document.getElementById('download-btn');
     const resetBtn = document.getElementById('reset-btn');
+    const themeBtn = document.getElementById('theme-toggle');
     const cvPreview = document.getElementById('cv-preview');
 
     // Personal Info Inputs
@@ -595,6 +596,22 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('add-experience').addEventListener('click', () => createItem(expTemplate, experienceList));
     document.getElementById('add-education').addEventListener('click', () => createItem(eduTemplate, educationList));
     document.getElementById('add-new-section').addEventListener('click', () => createCustomSection());
+
+    // Theme Toggle
+    const savedTheme = localStorage.getItem('archicv-theme');
+    if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.body.classList.add('dark-mode');
+        themeBtn.innerHTML = '<i data-lucide="sun"></i>';
+        lucide.createIcons();
+    }
+    
+    themeBtn.addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+        const isDark = document.body.classList.contains('dark-mode');
+        themeBtn.innerHTML = isDark ? '<i data-lucide="sun"></i>' : '<i data-lucide="moon"></i>';
+        lucide.createIcons();
+        localStorage.setItem('archicv-theme', isDark ? 'dark' : 'light');
+    });
 
     // PDF Download
     downloadBtn.addEventListener('click', () => {

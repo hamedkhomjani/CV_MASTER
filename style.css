@@ -14,6 +14,46 @@
     --radius: 12px;
 }
 
+body.dark-mode {
+    --primary: #3b82f6; 
+    --primary-hover: #60a5fa;
+    --secondary: #94a3b8;
+    --bg-app: #0f172a;
+    --bg-card: #1e293b;
+    --text-main: #f8fafc;
+    --text-muted: #cbd5e1;
+    --border: #334155;
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.5);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.5);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.5);
+}
+
+/* Hardcoded UI Overrides for Dark Mode */
+body.dark-mode .template-switcher { background: var(--bg-app); border: 1px solid var(--border); }
+body.dark-mode .btn-template.active { background: var(--bg-card); color: var(--primary); }
+body.dark-mode .btn-outline:hover { background-color: var(--border); }
+body.dark-mode .btn-ghost:hover { background: var(--border); }
+body.dark-mode .btn-dashed { background-color: var(--bg-app); }
+body.dark-mode .btn-dashed:hover { background: var(--border); }
+body.dark-mode .input-grid input, 
+body.dark-mode .input-grid textarea, 
+body.dark-mode #summary, 
+body.dark-mode #languages { background-color: var(--bg-app); color: var(--text-main); }
+body.dark-mode .dynamic-item { background: var(--bg-card); }
+body.dark-mode .btn-remove:hover, 
+body.dark-mode .btn-remove-sm:hover, 
+body.dark-mode .btn-remove-section:hover { background: #450a0a; color: #ef4444; }
+body.dark-mode .btn-add:hover { background: var(--border); }
+body.dark-mode .dragging { background: var(--bg-app); }
+body.dark-mode .drag-handle:hover { background: var(--bg-app); }
+body.dark-mode .skill-input-wrap { background: var(--bg-card); }
+body.dark-mode .gap-item-wrap { background: var(--bg-app); border-color: var(--secondary); }
+body.dark-mode .section-title-input:hover, 
+body.dark-mode .section-title-input:focus { background: var(--bg-app); }
+body.dark-mode .photo-upload-label { background: var(--bg-app); }
+body.dark-mode .photo-upload-label:hover { background: var(--border); }
+
+
 /* ==========================================================================
    1. RESET & BASE
    ========================================================================== */
@@ -51,6 +91,12 @@ body {
     border-bottom: 1px solid var(--border);
     box-shadow: var(--shadow-sm);
     z-index: 50;
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
 }
 
 .logo {
