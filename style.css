@@ -391,9 +391,12 @@ body {
 /* In Preview - Gap as an invisible item that takes up space */
 .skill-gap {
     display: inline-block;
-    padding: 4px 12px; /* Same horizontal padding as skill-tag */
-    height: 21px;      /* Height of an empty tag */
-    min-width: 30px;   /* Reasonable minimum space */
+    padding: 4px 12px;
+    /* Same horizontal padding as skill-tag */
+    height: 21px;
+    /* Height of an empty tag */
+    min-width: 30px;
+    /* Reasonable minimum space */
     visibility: hidden;
     pointer-events: none;
 }
@@ -900,7 +903,7 @@ body {
 .t-designer .cv-footer {
     clear: both;
     background: white;
-    padding: 60px 0 30px 0;
+    padding: 30px 0 30px 0;
     margin-top: 50px;
     border-top: 1px solid #eee;
     position: relative;
