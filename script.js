@@ -507,8 +507,17 @@ document.addEventListener('DOMContentLoaded', () => {
         // Remove button logic
         const removeBtn = item.querySelector('.btn-remove') || item.querySelector('.btn-remove-sm');
         removeBtn.addEventListener('click', () => {
-            item.remove();
-            updatePreview();
+            // Check if item has text content
+            let hasContent = false;
+            const itemInputs = item.querySelectorAll('input, textarea');
+            itemInputs.forEach(input => {
+                if (input.value.trim() !== '') hasContent = true;
+            });
+
+            if (!hasContent || confirm("Are you sure you want to remove this item?")) {
+                item.remove();
+                updatePreview();
+            }
         });
 
         // Event listeners for inputs within the item
