@@ -317,6 +317,18 @@
         </section>
     </template>
 
+    <!-- Custom Modal -->
+    <div id="confirm-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h3 class="modal-title"><i data-lucide="alert-triangle"></i> Remove Item</h3>
+            <p class="modal-text">Are you sure you want to remove this item? This action cannot be undone.</p>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-outline" id="modal-cancel">Cancel</button>
+                <button type="button" class="btn btn-danger" id="modal-confirm">Delete</button>
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 

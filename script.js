@@ -81,6 +81,32 @@ document.addEventListener('DOMContentLoaded', () => {
     const gapTemplate = document.getElementById('gap-item-template');
     const sectionTemplate = document.getElementById('custom-section-template');
 
+    // --- Custom Modal Logic ---
+    let confirmCallback = null;
+    const confirmModal = document.getElementById('confirm-modal');
+    const modalCancelBtn = document.getElementById('modal-cancel');
+    const modalConfirmBtn = document.getElementById('modal-confirm');
+    const modalText = confirmModal.querySelector('.modal-text');
+
+    function showConfirmModal(message, onConfirm) {
+        modalText.textContent = message;
+        confirmCallback = onConfirm;
+        confirmModal.classList.add('active');
+    }
+
+    function closeConfirmModal() {
+        confirmModal.classList.remove('active');
+        confirmCallback = null;
+    }
+
+    modalCancelBtn.addEventListener('click', closeConfirmModal);
+    modalConfirmBtn.addEventListener('click', () => {
+        if (confirmCallback) {
+            confirmCallback();
+        }
+        closeConfirmModal();
+    });
+
     // --- Core Functions ---
 
     /**
@@ -514,9 +540,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (input.value.trim() !== '') hasContent = true;
             });
 
-            if (!hasContent || confirm("Are you sure you want to remove this item?")) {
+            if (!hasContent) {
                 item.remove();
                 updatePreview();
+            } else {
+                showConfirmModal("Are you sure you want to remove this item?", () => {
+                    item.remove();
+                    updatePreview();
+                });
             }
         });
 
@@ -547,10 +578,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         removeSectBtn.addEventListener('click', () => {
-            if (confirm(`Remove entire "${titleInput.value || 'section'}" section?`)) {
+            showConfirmModal(`Remove entire "${titleInput.value || 'section'}" section?`, () => {
                 sect.remove();
                 updatePreview();
-            }
+            });
         });
 
         // Add items if provided
@@ -662,11 +693,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Reset Data
     resetBtn.addEventListener('click', () => {
-        if (confirm("Reset to default content? This will clear all your current data.")) {
+        showConfirmModal("Reset to default content? This will clear all your current data.", () => {
             localStorage.removeItem('archicv-data');
             localStorage.removeItem('archicv-photo');
             location.reload();
-        }
+        });
     });
 
     // Preview Scaling logic
