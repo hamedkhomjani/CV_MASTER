@@ -6,6 +6,7 @@
     "phone": "0762573273",
     "location": "Älvsjö, Stockholm",
     "linkedin": "behance.net/hamedkhomjanidesign",
+    "portfolio": "google.com",
     "summary": "UX/UI Designer with 3+ years of experience designing\ndigital products and POS systems. Skilled in creating\nintuitive interfaces for payment flows, dashboards, and\nadmin panels using Figma and modern UX methodologies.\nExperienced in collaborating closely with developers and\nleveraging front-end knowledge (HTML, CSS, JavaScript) to\nensure accurate implementation of UI designs. Conducted\ndesign QA and validated user experience across real\ndevices, including POS terminals and self-service kiosks.\nStrong understanding of transactional systems, product\nonboarding, and real-world deployment environments.",
     "languages": "Persian (Native), English (C1), Swedish (A2), German (A2)"
   },
@@ -48,7 +49,7 @@
   ],
   "customSections": [
     {
-      "id": "skills",
+      "id": "sect-1775167909873-0bwzvvz1u",
       "title": "Skills",
       "items": [
         "UX Research",
@@ -60,7 +61,7 @@
       ]
     },
     {
-      "id": "pos",
+      "id": "sect-1775167909873-eyexwzma3",
       "title": "Product & POS Systems",
       "items": [
         "Purspot POS",
@@ -70,7 +71,7 @@
       ]
     },
     {
-      "id": "tools",
+      "id": "sect-1775167909873-si9rpw5yf",
       "title": "Tools",
       "items": [
         "Figma",
@@ -81,7 +82,7 @@
       ]
     },
     {
-      "id": "testing",
+      "id": "sect-1775167909873-7n59m5y6h",
       "title": "Product & Testing",
       "items": [
         "Manual Testing",

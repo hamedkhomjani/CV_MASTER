@@ -52,6 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const phoneInput = document.getElementById('phone');
     const locationInput = document.getElementById('location');
     const linkedinInput = document.getElementById('linkedin');
+    const portfolioInput = document.getElementById('portfolio');
     const summaryInput = document.getElementById('summary');
     const languagesInput = document.getElementById('languages');
 
@@ -62,6 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const previewPhone = document.getElementById('preview-phone');
     const previewLocation = document.getElementById('preview-location');
     const previewLinkedin = document.getElementById('preview-linkedin');
+    const previewPortfolio = document.getElementById('preview-portfolio');
     const previewSummary = document.getElementById('preview-summary');
     const previewLanguages = document.getElementById('preview-languages');
 
@@ -136,6 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
         updateText(phoneInput, previewPhone, document.getElementById('preview-phone-wrap'));
         updateText(locationInput, previewLocation, document.getElementById('preview-location-wrap'));
         updateText(linkedinInput, previewLinkedin, document.getElementById('preview-linkedin-wrap'));
+        updateText(portfolioInput, previewPortfolio, document.getElementById('preview-portfolio-wrap'));
 
         // Summary
         previewSummary.textContent = summaryInput.value || 'Write a compelling summary to catch the recruiter\'s eye...';
@@ -169,6 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 phone: phoneInput.value,
                 location: locationInput.value,
                 linkedin: linkedinInput.value,
+                portfolio: portfolioInput.value,
                 summary: summaryInput.value,
                 languages: languagesInput.value
             },
@@ -281,6 +285,7 @@ document.addEventListener('DOMContentLoaded', () => {
             phoneInput.value = data.personal.phone || '';
             locationInput.value = data.personal.location || '';
             linkedinInput.value = data.personal.linkedin || '';
+            portfolioInput.value = data.personal.portfolio || '';
             summaryInput.value = data.personal.summary || '';
             languagesInput.value = data.personal.languages || '';
 
@@ -628,7 +633,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Event Listeners ---
 
     // Static Inputs
-    [fullNameInput, jobTitleInput, emailInput, phoneInput, locationInput, linkedinInput, summaryInput, languagesInput].forEach(el => {
+    [fullNameInput, jobTitleInput, emailInput, phoneInput, locationInput, linkedinInput, portfolioInput, summaryInput, languagesInput].forEach(el => {
         el.addEventListener('input', updatePreview);
     });
 
@@ -728,7 +733,8 @@ document.addEventListener('DOMContentLoaded', () => {
         emailInput.value = "eng.h.khomjani@gmail.com";
         phoneInput.value = "0762573273";
         locationInput.value = "Älvsjö, Stockholm"; 
-        linkedinInput.value = "behance.net/hamedkhomjanidesign";
+        linkedinInput.value = "linkedin.com/in/hamed-khomjani";
+        portfolioInput.value = "behance.net/hamedkhomjanidesign";
         summaryInput.value = "Dynamic UX/UI Designer with a proven track record at Purspot AB, enhancing user engagement through innovative design and responsive platforms. Expert in Figma and adept at fostering collaboration, I've significantly streamlined workflows and improved productivity. My designs, grounded in UX research, elevate usability and aesthetics, consistently meeting project goals.";
         languagesInput.value = "Persian (Native), English (C1), Swedish (A2), German (A2)";
 
