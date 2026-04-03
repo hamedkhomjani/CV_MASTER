@@ -227,25 +227,30 @@ document.addEventListener('DOMContentLoaded', () => {
         return data;
     }
 
+    let saveTimeout = null;
     /**
-     * Saves current form state to localStorage AND the local server
+     * Serializes all form data and saves to backend with debounce.
      */
-    async function saveData() {
-        const data = getFormData();
+    function saveData() {
+        if (saveTimeout) clearTimeout(saveTimeout);
         
-        // Save to browser (backup)
-        localStorage.setItem('archicv-data', JSON.stringify(data));
+        saveTimeout = setTimeout(async () => {
+            const data = getFormData();
+            
+            // Save to browser (backup)
+            localStorage.setItem('archicv-data', JSON.stringify(data));
 
-        // Save to Local Database (File)
-        try {
-            await fetch('/api/cv-data', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            });
-        } catch (e) {
-            console.warn("Server save failed, using local storage only.", e);
-        }
+            // Save to Local Database (File)
+            try {
+                await fetch('/api/cv-data', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+            } catch (e) {
+                console.warn("Server save failed, using local storage only.", e);
+            }
+        }, 800); // Wait 800ms after last activity to save
     }
 
     /**
@@ -655,8 +660,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const itemsList = sect.querySelector('.section-items-list');
         const addBtn = sect.querySelector('.add-skill-item');
         const removeSectBtn = sect.querySelector('.btn-remove-section');
-
-        titleInput.value = data.title;
+        sect.dataset.id = data.id || `sect-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        titleInput.value = data.title || '';
         titleInput.addEventListener('input', updatePreview);
 
         addBtn.addEventListener('click', () => {
