@@ -288,14 +288,20 @@
     </template>
 
     <template id="gap-item-template">
-        <div class="skill-input-wrap gap-item-wrap" data-is-gap="true">
+        <div class="skill-input-wrap gap-item-wrap draggable-item" data-is-gap="true">
+            <div class="item-drag-handle-sm">
+                <i data-lucide="grip-vertical"></i>
+            </div>
             <div class="gap-label">--- GAP ---</div>
             <button type="button" class="btn-remove-sm"><i data-lucide="x"></i></button>
         </div>
     </template>
 
     <template id="skill-item-template">
-        <div class="skill-input-wrap">
+        <div class="skill-input-wrap draggable-item">
+            <div class="item-drag-handle-sm">
+                <i data-lucide="grip-vertical"></i>
+            </div>
             <input type="text" class="skill-name" placeholder="Item (e.g., Figma)">
             <button type="button" class="btn-remove-sm"><i data-lucide="x"></i></button>
         </div>

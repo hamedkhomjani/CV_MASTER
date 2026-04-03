@@ -49,7 +49,7 @@
   ],
   "customSections": [
     {
-      "id": "sect-1775167909873-0bwzvvz1u",
+      "id": "sect-1775204201287-fav1vogk5",
       "title": "Skills",
       "items": [
         "UX Research",
@@ -61,7 +61,7 @@
       ]
     },
     {
-      "id": "sect-1775167909873-eyexwzma3",
+      "id": "sect-1775204201287-3hmsp28fs",
       "title": "Product & POS Systems",
       "items": [
         "Purspot POS",
@@ -71,9 +71,10 @@
       ]
     },
     {
-      "id": "sect-1775167909873-si9rpw5yf",
+      "id": "sect-1775204201287-2zrx0owk6",
       "title": "Tools",
       "items": [
+        "__GAP__",
         "Figma",
         "Adobe XD",
         "Rhino (3D)",
@@ -82,7 +83,7 @@
       ]
     },
     {
-      "id": "sect-1775167909873-7n59m5y6h",
+      "id": "sect-1775204201288-es3fv2tzp",
       "title": "Product & Testing",
       "items": [
         "Manual Testing",

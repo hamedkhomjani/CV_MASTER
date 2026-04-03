@@ -529,6 +529,62 @@ document.addEventListener('DOMContentLoaded', () => {
         draggedElement = null;
     }
 
+    // --- Item-Level Reordering (Skills, Gaps) ---
+    let draggedItem = null;
+
+    function handleItemDragStart(e) {
+        draggedItem = this;
+        this.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', '');
+        e.stopPropagation(); // Avoid triggering section drag
+    }
+
+    function handleItemDragOver(e) {
+        if (e.preventDefault) e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        e.stopPropagation();
+
+        const target = e.target.closest('.draggable-item');
+        if (target && target !== draggedItem && target.parentNode === draggedItem.parentNode) {
+            target.classList.add('drag-over');
+        }
+        return false;
+    }
+
+    function handleItemDrop(e) {
+        if (e.stopPropagation) e.stopPropagation();
+        
+        const target = e.target.closest('.draggable-item');
+        if (target) {
+            target.classList.remove('drag-over');
+        }
+
+        if (target && draggedItem !== target && target.parentNode === draggedItem.parentNode) {
+            const container = target.parentNode;
+            const rect = target.getBoundingClientRect();
+            const midpoint = rect.left + rect.width / 2;
+            
+            if (e.clientX < midpoint) {
+                container.insertBefore(draggedItem, target);
+            } else {
+                container.insertBefore(draggedItem, target.nextSibling);
+            }
+            
+            updatePreview();
+        }
+        return false;
+    }
+
+    function handleItemDragEnd() {
+        this.classList.remove('dragging');
+        const container = this.parentNode;
+        if (container) {
+            container.querySelectorAll('.draggable-item').forEach(s => s.classList.remove('drag-over'));
+        }
+        draggedItem = null;
+    }
+
     // --- Dynamic Item Management ---
 
     function createItem(template, container) {
@@ -561,6 +617,31 @@ document.addEventListener('DOMContentLoaded', () => {
         inputs.forEach(input => {
             input.addEventListener('input', updatePreview);
         });
+
+        // --- Drag & Drop logic for items ---
+        if (item.classList.contains('draggable-item')) {
+            const handle = item.querySelector('.item-drag-handle-sm') || item;
+            
+            handle.addEventListener('mousedown', (e) => {
+                // If it's the handle, enable dragging
+                if (e.target.closest('.item-drag-handle-sm')) {
+                    item.setAttribute('draggable', 'true');
+                }
+            });
+            
+            handle.addEventListener('mouseup', () => {
+                item.setAttribute('draggable', 'false');
+            });
+
+            item.addEventListener('dragstart', handleItemDragStart);
+            item.addEventListener('dragover', handleItemDragOver);
+            item.addEventListener('dragleave', (e) => {
+                const target = e.target.closest('.draggable-item');
+                if (target) target.classList.remove('drag-over');
+            });
+            item.addEventListener('drop', handleItemDrop);
+            item.addEventListener('dragend', handleItemDragEnd);
+        }
 
         container.appendChild(clone);
         lucide.createIcons(); // Initialize icons for the new item

@@ -450,6 +450,43 @@ body {
     user-select: none;
 }
 
+.item-drag-handle-sm {
+    cursor: grab;
+    color: #cbd5e1;
+    display: flex;
+    align-items: center;
+    padding: 2px 4px;
+    border-radius: 4px;
+    transition: 0.2s;
+    margin-right: 2px;
+}
+
+.item-drag-handle-sm:active {
+    cursor: grabbing;
+}
+
+.item-drag-handle-sm:hover {
+    background: #f1f5f9;
+    color: var(--primary);
+}
+
+.item-drag-handle-sm svg,
+.item-drag-handle-sm i {
+    width: 12px;
+    height: 12px;
+}
+
+.draggable-item.dragging {
+    opacity: 0.5;
+    transform: scale(0.95);
+    background: #eff6ff;
+    border-color: var(--primary);
+}
+
+.draggable-item.drag-over {
+    border: 2px solid var(--primary);
+}
+
 /* In Preview - Gap as an invisible item that takes up space */
 .skill-gap {
     display: inline-block;
