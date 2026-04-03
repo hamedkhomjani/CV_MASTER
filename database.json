@@ -49,7 +49,7 @@
   ],
   "customSections": [
     {
-      "id": "sect-1775204201287-fav1vogk5",
+      "id": "sect-1775204889902-5lqco9kak",
       "title": "Skills",
       "items": [
         "UX Research",
@@ -61,7 +61,7 @@
       ]
     },
     {
-      "id": "sect-1775204201287-3hmsp28fs",
+      "id": "sect-1775204889902-z787u0su7",
       "title": "Product & POS Systems",
       "items": [
         "Purspot POS",
@@ -71,7 +71,7 @@
       ]
     },
     {
-      "id": "sect-1775204201287-2zrx0owk6",
+      "id": "sect-1775204889902-b9o7a4pit",
       "title": "Tools",
       "items": [
         "__GAP__",
@@ -83,7 +83,7 @@
       ]
     },
     {
-      "id": "sect-1775204201288-es3fv2tzp",
+      "id": "sect-1775204889902-vya7psvr7",
       "title": "Product & Testing",
       "items": [
         "Manual Testing",
@@ -93,5 +93,5 @@
       ]
     }
   ],
-  "template": "designer"
+  "template": "modern"
 }

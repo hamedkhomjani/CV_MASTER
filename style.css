@@ -626,6 +626,32 @@ body {
     align-items: center;
 }
 
+.preview-header {
+    width: 210mm;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+}
+
+.preview-badge {
+    background: var(--primary);
+    color: white;
+    font-size: 0.7rem;
+    font-weight: 800;
+    padding: 5px 14px;
+    border-radius: 100px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
+}
+
+.preview-zoom-info {
+    font-size: 0.75rem;
+    color: var(--secondary);
+    font-weight: 600;
+}
+
 .preview-container {
     width: 100%;
     display: flex;
