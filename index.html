@@ -15,7 +15,7 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <!-- html2pdf.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=102">
 </head>
 
 <body>
@@ -167,7 +167,13 @@
             <section class="preview-pane">
                 <div class="preview-header">
                     <span class="preview-badge">Live Preview</span>
-                    <div class="preview-zoom-info">Scaling to fit screen</div>
+                    <div class="preview-zoom-controls">
+                        <button type="button" id="zoom-out" class="zoom-btn" title="Zoom Out"><i data-lucide="minus"></i></button>
+                        <span id="zoom-value" class="zoom-text" title="Click to reset (100%)">100%</span>
+                        <button type="button" id="zoom-in" class="zoom-btn" title="Zoom In"><i data-lucide="plus"></i></button>
+                        <div class="zoom-divider"></div>
+                        <button type="button" id="zoom-auto" class="zoom-btn active" title="Toggle Auto-fit to screen"><i data-lucide="maximize"></i></button>
+                    </div>
                 </div>
                 <div class="preview-container">
                     <div id="cv-preview" class="cv-document">

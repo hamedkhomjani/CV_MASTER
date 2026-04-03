@@ -787,21 +787,72 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Preview Scaling logic
+    let currentZoom = 1;
+    let isAutoFit = true;
+
+    const zoomOutBtn = document.getElementById('zoom-out');
+    const zoomInBtn = document.getElementById('zoom-in');
+    const zoomValueSpan = document.getElementById('zoom-value');
+    const zoomAutoBtn = document.getElementById('zoom-auto');
+
+    function applyScaling(scale) {
+        const previewDoc = document.querySelector('.cv-document');
+        if (!previewDoc) return;
+        
+        previewDoc.style.transform = `scale(${scale})`;
+        zoomValueSpan.textContent = `${Math.round(scale * 100)}%`;
+        
+        // Auto-scroll parent if zoomed out too much (optional - browser handles mostly)
+    }
+
     function adjustScaling() {
+        if (!isAutoFit) return;
+
         const previewPane = document.querySelector('.preview-pane');
         const previewDoc = document.querySelector('.cv-document');
+        if (!previewPane || !previewDoc) return;
+        
         const containerWidth = previewPane.clientWidth - 80; // Padding
         const docWidth = 793.7; // 210mm in px at 96dpi (approx)
 
         if (containerWidth < docWidth) {
-            const scale = containerWidth / docWidth;
-            previewDoc.style.transform = `scale(${scale})`;
-            document.querySelector('.preview-zoom-info').textContent = `Scaled to ${Math.round(scale * 100)}%`;
+            currentZoom = containerWidth / docWidth;
+            applyScaling(currentZoom);
         } else {
-            previewDoc.style.transform = `scale(1)`;
-            document.querySelector('.preview-zoom-info').textContent = `Original Size`;
+            currentZoom = 1;
+            applyScaling(currentZoom);
         }
     }
+
+    // Zoom Event Listeners
+    zoomInBtn.addEventListener('click', () => {
+        isAutoFit = false;
+        zoomAutoBtn.classList.remove('active');
+        currentZoom = Math.min(2, currentZoom + 0.1); // Max 200%
+        applyScaling(currentZoom);
+    });
+
+    zoomOutBtn.addEventListener('click', () => {
+        isAutoFit = false;
+        zoomAutoBtn.classList.remove('active');
+        currentZoom = Math.max(0.2, currentZoom - 0.1); // Min 20%
+        applyScaling(currentZoom);
+    });
+
+    zoomValueSpan.addEventListener('click', () => {
+        isAutoFit = false;
+        zoomAutoBtn.classList.remove('active');
+        currentZoom = 1;
+        applyScaling(currentZoom);
+    });
+
+    zoomAutoBtn.addEventListener('click', () => {
+        isAutoFit = !isAutoFit;
+        zoomAutoBtn.classList.toggle('active', isAutoFit);
+        if (isAutoFit) {
+            adjustScaling();
+        }
+    });
 
     window.addEventListener('resize', adjustScaling);
 

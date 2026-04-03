@@ -1,7 +1,7 @@
 {
   "personal": {
     "fullName": "Hamed Khomjani",
-    "jobTitle": "UX/UI Designer",
+    "jobTitle": "",
     "email": "eng.h.khomjani@gmail.com",
     "phone": "0762573273",
     "location": "Älvsjö, Stockholm",
@@ -49,7 +49,7 @@
   ],
   "customSections": [
     {
-      "id": "sect-1775204889902-5lqco9kak",
+      "id": "sect-1775208284133-ofz2gurg4",
       "title": "Skills",
       "items": [
         "UX Research",
@@ -61,7 +61,7 @@
       ]
     },
     {
-      "id": "sect-1775204889902-z787u0su7",
+      "id": "sect-1775208284133-0m7ztb0y9",
       "title": "Product & POS Systems",
       "items": [
         "Purspot POS",
@@ -71,7 +71,7 @@
       ]
     },
     {
-      "id": "sect-1775204889902-b9o7a4pit",
+      "id": "sect-1775208284133-54oh6vcr0",
       "title": "Tools",
       "items": [
         "__GAP__",
@@ -83,7 +83,7 @@
       ]
     },
     {
-      "id": "sect-1775204889902-vya7psvr7",
+      "id": "sect-1775208284133-d47uwngdd",
       "title": "Product & Testing",
       "items": [
         "Manual Testing",
@@ -93,5 +93,5 @@
       ]
     }
   ],
-  "template": "modern"
+  "template": "designer"
 }

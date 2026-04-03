@@ -624,6 +624,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: flex-start; /* Ensure top alignment */
 }
 
 .preview-header {
@@ -646,16 +647,90 @@ body {
     box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
 }
 
-.preview-zoom-info {
-    font-size: 0.75rem;
+.preview-zoom-controls {
+    display: flex;
+    align-items: center;
+    background: var(--bg-card);
+    border: 1.5px solid var(--border);
+    border-radius: 100px;
+    padding: 2px 6px;
+    gap: 4px;
+    box-shadow: var(--shadow-sm);
+    transition: 0.2s;
+}
+
+.preview-zoom-controls:hover {
+    box-shadow: var(--shadow-md);
+    border-color: var(--secondary);
+}
+
+.zoom-btn {
+    background: none;
+    border: none;
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    cursor: pointer;
     color: var(--secondary);
-    font-weight: 600;
+    transition: 0.2s;
+}
+
+.zoom-btn:hover {
+    background: #eff6ff;
+    color: var(--primary);
+}
+
+.zoom-btn.active {
+    background: var(--primary);
+    color: white;
+}
+
+.zoom-btn svg, 
+.zoom-btn i {
+    width: 14px;
+    height: 14px;
+}
+
+.zoom-text {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--text-main);
+    min-width: 44px;
+    text-align: center;
+    cursor: pointer;
+    padding: 0 4px;
+    user-select: none;
+}
+
+.zoom-text:hover {
+    color: var(--primary);
+}
+
+.zoom-divider {
+    width: 1px;
+    height: 14px;
+    background: var(--border);
+    margin: 0 4px;
+}
+
+body.dark-mode .preview-zoom-controls {
+    background: #1e293b;
+    border-color: #334155;
+}
+
+body.dark-mode .zoom-btn:hover {
+    background: #334155;
+    color: white;
 }
 
 .preview-container {
     width: 100%;
     display: flex;
     justify-content: center;
+    align-items: flex-start; /* Pin to top */
     padding-bottom: 5rem;
 }
 
@@ -667,6 +742,7 @@ body {
     font-family: 'Inter', sans-serif;
     position: relative;
     transition: all 0.3s ease;
+    transform-origin: top center;
     /* Shared Document Logic */
 }
 
