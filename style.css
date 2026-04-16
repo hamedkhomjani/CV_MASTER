@@ -1010,6 +1010,7 @@ body.dark-mode .zoom-btn:hover {
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding: 0 35px; /* Added padding to prevent touching edges */
 }
 
 .t-designer .header-main h1 {

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Blue background -->
+  <rect width="64" height="64" rx="12" fill="#2563eb"/>
+
+  <!-- White document body -->
+  <rect x="12" y="8" width="30" height="38" rx="3" fill="white"/>
+
+  <!-- Folded corner (dog-ear) -->
+  <polygon points="34,8 42,16 34,16" fill="#bfdbfe"/>
+
+  <!-- Document lines -->
+  <rect x="17" y="22" width="20" height="2.5" rx="1.2" fill="#2563eb" opacity="0.6"/>
+  <rect x="17" y="28" width="20" height="2.5" rx="1.2" fill="#2563eb" opacity="0.6"/>
+  <rect x="17" y="34" width="13" height="2.5" rx="1.2" fill="#2563eb" opacity="0.6"/>
+
+  <!-- Orange "CV" pill badge -->
+  <rect x="30" y="36" width="22" height="16" rx="8" fill="#f26522"/>
+  <text
+    x="41" y="48"
+    font-family="Arial, sans-serif"
+    font-size="9"
+    font-weight="900"
+    fill="white"
+    text-anchor="middle"
+    letter-spacing="0.5">CV</text>
+</svg>
