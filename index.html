@@ -36,14 +36,23 @@
                 <button type="button" class="btn-template" data-template="onyx">Onyx Elite</button>
             </div>
             <div class="actions">
-                <button id="theme-toggle" class="btn btn-outline" title="Toggle Dark Mode">
+                <button id="theme-toggle" class="btn btn-outline btn-tooltip" data-tooltip="Toggle Dark/Light Mode" title="Toggle Dark Mode">
                     <i data-lucide="moon"></i>
                 </button>
-                <button id="reset-btn" class="btn btn-outline">
+                <div class="actions-divider"></div>
+                <button id="export-json-btn" class="btn btn-outline btn-tooltip" data-tooltip="Save Data (JSON Backup)">
+                    <i data-lucide="save"></i>
+                </button>
+                <button id="import-json-btn" class="btn btn-outline btn-tooltip" data-tooltip="Load Data from File">
+                    <i data-lucide="folder-open"></i>
+                </button>
+                <input type="file" id="import-input" accept=".json" style="display:none;">
+                <div class="actions-divider"></div>
+                <button id="reset-btn" class="btn btn-outline btn-tooltip" data-tooltip="Clear All Data">
                     <i data-lucide="refresh-cw"></i>
                     <span>Reset</span>
                 </button>
-                <button id="download-btn" class="btn btn-primary">
+                <button id="download-btn" class="btn btn-primary btn-tooltip" data-tooltip="Generate PDF Document">
                     <i data-lucide="download"></i>
                     <span>Download PDF</span>
                 </button>

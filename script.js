@@ -782,6 +782,110 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     });
 
+    // --- JSON Import / Export ---
+    const exportBtn = document.getElementById('export-json-btn');
+    const importBtn = document.getElementById('import-json-btn');
+    const importInput = document.getElementById('import-input');
+
+    if (exportBtn) {
+        exportBtn.addEventListener('click', () => {
+            const data = getFormData();
+            // Also include the photo if it exists (base64)
+            const photo = localStorage.getItem('archicv-photo');
+            const fullData = { ...data, photo };
+
+            const blob = new Blob([JSON.stringify(fullData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            const namePart = (fullNameInput.value || 'ArchiCV').trim().replace(/\s+/g, '_');
+            
+            a.href = url;
+            a.download = `Resume_Backup_${namePart}_${new Date().toISOString().slice(0, 10)}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+    }
+
+    if (importBtn && importInput) {
+        importBtn.addEventListener('click', () => importInput.click());
+        importInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                try {
+                    const data = JSON.parse(ev.target.result);
+                    
+                    if (data && data.personal) {
+                        // Personal
+                        fullNameInput.value = data.personal.fullName || '';
+                        jobTitleInput.value = data.personal.jobTitle || '';
+                        emailInput.value = data.personal.email || '';
+                        phoneInput.value = data.personal.phone || '';
+                        locationInput.value = data.personal.location || '';
+                        linkedinInput.value = data.personal.linkedin || '';
+                        portfolioInput.value = data.personal.portfolio || '';
+                        summaryInput.value = data.personal.summary || '';
+                        languagesInput.value = data.personal.languages || '';
+
+                        // Photo
+                        if (data.photo) {
+                            applyPhoto(data.photo);
+                        }
+
+                        // Experience
+                        experienceList.innerHTML = '';
+                        if (data.experience) {
+                            data.experience.forEach(exp => {
+                                createItem(expTemplate, experienceList);
+                                const last = experienceList.lastElementChild;
+                                if (last.querySelector('.exp-title')) last.querySelector('.exp-title').value = exp.title || '';
+                                if (last.querySelector('.exp-company')) last.querySelector('.exp-company').value = exp.company || '';
+                                if (last.querySelector('.exp-dates')) last.querySelector('.exp-dates').value = exp.dates || '';
+                                if (last.querySelector('.exp-desc')) last.querySelector('.exp-desc').value = exp.desc || '';
+                            });
+                        }
+
+                        // Education
+                        educationList.innerHTML = '';
+                        if (data.education) {
+                            data.education.forEach(edu => {
+                                createItem(eduTemplate, educationList);
+                                const last = educationList.lastElementChild;
+                                if (last.querySelector('.edu-degree')) last.querySelector('.edu-degree').value = edu.degree || '';
+                                if (last.querySelector('.edu-school')) last.querySelector('.edu-school').value = edu.school || '';
+                                if (last.querySelector('.edu-dates')) last.querySelector('.edu-dates').value = edu.dates || '';
+                            });
+                        }
+
+                        // Custom Sections
+                        customSectionsContainer.innerHTML = '';
+                        if (data.customSections) {
+                            data.customSections.forEach(sectData => createCustomSection(sectData));
+                        }
+
+                        // Template
+                        const currentTemplate = data.template || 'modern';
+                        document.querySelectorAll('.btn-template').forEach(btn => {
+                            btn.classList.toggle('active', btn.dataset.template === currentTemplate);
+                        });
+                        cvPreview.className = `cv-document t-${currentTemplate}`;
+
+                        updatePreview();
+                        importInput.value = '';
+                    }
+                } catch (err) {
+                    console.error("Import failed:", err);
+                    alert("Failed to import data. Please check the file format.");
+                }
+            };
+            reader.readAsText(file);
+        });
+    }
+
     // Reset Data
     resetBtn.addEventListener('click', () => {
         showConfirmModal("Reset to default content? This will clear all your current data.", () => {
