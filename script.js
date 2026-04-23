@@ -798,9 +798,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             const namePart = (fullNameInput.value || 'ArchiCV').trim().replace(/\s+/g, '_');
+            const titlePart = (jobTitleInput.value || 'Resume').trim().replace(/\s+/g, '_');
             
             a.href = url;
-            a.download = `Resume_Backup_${namePart}_${new Date().toISOString().slice(0, 10)}.json`;
+            a.download = `${namePart}_${titlePart}_CV.json`;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
