@@ -129,16 +129,36 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /**
+     * Updates a URL field (linkedin/portfolio) as a clickable anchor in the preview.
+     */
+    function updateUrlField(input, preview, wrapper, scheme = 'https') {
+        const val = input.value.trim();
+        if (val) {
+            let href;
+            if (scheme === 'mailto') {
+                href = `mailto:${val}`;
+            } else {
+                href = /^https?:\/\//i.test(val) ? val : 'https://' + val;
+            }
+            preview.innerHTML = `<a href="${href}" target="_blank" class="cv-link">${val}</a>`;
+            wrapper.style.display = 'flex';
+        } else {
+            preview.innerHTML = '';
+            wrapper.style.display = 'none';
+        }
+    }
+
+    /**
      * Main update function triggered on any input
      */
     function updatePreview() {
         updateText(fullNameInput, previewName);
         updateText(jobTitleInput, previewTitle);
-        updateText(emailInput, previewEmail, document.getElementById('preview-email-wrap'));
+        updateUrlField(emailInput, previewEmail, document.getElementById('preview-email-wrap'), 'mailto');
         updateText(phoneInput, previewPhone, document.getElementById('preview-phone-wrap'));
         updateText(locationInput, previewLocation, document.getElementById('preview-location-wrap'));
-        updateText(linkedinInput, previewLinkedin, document.getElementById('preview-linkedin-wrap'));
-        updateText(portfolioInput, previewPortfolio, document.getElementById('preview-portfolio-wrap'));
+        updateUrlField(linkedinInput, previewLinkedin, document.getElementById('preview-linkedin-wrap'));
+        updateUrlField(portfolioInput, previewPortfolio, document.getElementById('preview-portfolio-wrap'));
 
         // Summary
         previewSummary.textContent = summaryInput.value || 'Write a compelling summary to catch the recruiter\'s eye...';
@@ -754,7 +774,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // PDF Download
-    downloadBtn.addEventListener('click', () => {
+    downloadBtn.addEventListener('click', async () => {
         const namePart = (fullNameInput.value || 'Resume').trim().replace(/\s+/g, '_');
         const titlePart = (jobTitleInput.value || '').trim().replace(/\s+/g, '_');
         const fileName = (titlePart ? `${namePart}_${titlePart}` : namePart) + '.pdf';
@@ -780,15 +800,69 @@ document.addEventListener('DOMContentLoaded', () => {
             pagebreak: { mode: ['css', 'legacy'] }
         };
 
-        // ─── Step 2: Generate PDF, then restore transform ───
-        html2pdf()
-            .set(opt)
-            .from(cvPreview)
-            .save()
-            .then(() => {
-                cvPreview.style.transform = savedTransform;
-                cvPreview.style.width = savedWidth;
+        // ─── Step 2: Collect link positions BEFORE rendering ───
+        // We measure anchor elements relative to the cv-preview element,
+        // then map those pixel positions to PDF mm coordinates.
+        function collectLinks() {
+            const links = [];
+            const containerRect = cvPreview.getBoundingClientRect();
+            const anchors = cvPreview.querySelectorAll('a.cv-link[href]');
+            anchors.forEach(a => {
+                const rect = a.getBoundingClientRect();
+                links.push({
+                    href: a.href,
+                    // Position relative to the cv-preview element (px)
+                    x: rect.left - containerRect.left,
+                    y: rect.top - containerRect.top,
+                    w: rect.width,
+                    h: rect.height
+                });
             });
+            return links;
+        }
+
+        const collectedLinks = collectLinks();
+
+        // ─── Step 3: Generate PDF, inject link annotations, then save ───
+        try {
+            const worker = html2pdf().set(opt).from(cvPreview);
+
+            // Use toPdf() to get access to the internal jsPDF instance
+            const pdfInstance = await worker.toPdf().get('pdf');
+
+            // The cv-preview element's natural (un-scaled) pixel width
+            // After setting width to '210mm' the browser renders it at ~794px (@96dpi)
+            const containerPxWidth = cvPreview.getBoundingClientRect().width;
+            const pdfPageWidthMm = 210; // A4
+            const pdfPageHeightMm = 297; // A4
+            const pxToMm = pdfPageWidthMm / containerPxWidth;
+
+            // cvPreview's total scroll height in px
+            const containerPxHeight = cvPreview.scrollHeight;
+            const totalPdfHeightMm = containerPxHeight * pxToMm;
+            const totalPages = pdfInstance.getNumberOfPages();
+
+            collectedLinks.forEach(link => {
+                // Convert px position to mm
+                const xMm = link.x * pxToMm;
+                const yMm = link.y * pxToMm;
+                const wMm = link.w * pxToMm;
+                const hMm = link.h * pxToMm;
+
+                // Determine which page the link falls on
+                const pageIndex = Math.floor(yMm / pdfPageHeightMm); // 0-based
+                const pageNum = Math.min(pageIndex + 1, totalPages);
+                const yOnPage = yMm - pageIndex * pdfPageHeightMm;
+
+                pdfInstance.setPage(pageNum);
+                pdfInstance.link(xMm, yOnPage, wMm, hMm, { url: link.href });
+            });
+
+            pdfInstance.save(fileName);
+        } finally {
+            cvPreview.style.transform = savedTransform;
+            cvPreview.style.width = savedWidth;
+        }
     });
 
     // --- JSON Import / Export ---

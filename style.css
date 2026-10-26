@@ -876,6 +876,18 @@ body.dark-mode .zoom-btn:hover {
     border: 1px solid var(--border);
 }
 
+/* Clickable links in CV (LinkedIn / Portfolio) */
+.cv-link {
+    color: inherit;
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s ease;
+}
+
+.cv-link:hover {
+    border-bottom-color: currentColor;
+}
+
 .cv-footer {
     margin-top: 50px;
     padding-top: 60px;
