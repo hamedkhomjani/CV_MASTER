@@ -15,7 +15,7 @@
 }
 
 body.dark-mode {
-    --primary: #3b82f6; 
+    --primary: #3b82f6;
     --primary-hover: #60a5fa;
     --secondary: #94a3b8;
     --bg-app: #0f172a;
@@ -29,29 +29,84 @@ body.dark-mode {
 }
 
 /* Hardcoded UI Overrides for Dark Mode */
-body.dark-mode .template-switcher { background: var(--bg-app); border: 1px solid var(--border); }
-body.dark-mode .btn-template.active { background: var(--bg-card); color: var(--primary); }
-body.dark-mode .btn-outline:hover { background-color: var(--border); }
-body.dark-mode .btn-ghost:hover { background: var(--border); }
-body.dark-mode .btn-dashed { background-color: var(--bg-app); }
-body.dark-mode .btn-dashed:hover { background: var(--border); }
-body.dark-mode .input-grid input, 
-body.dark-mode .input-grid textarea, 
-body.dark-mode #summary, 
-body.dark-mode #languages { background-color: var(--bg-app); color: var(--text-main); }
-body.dark-mode .dynamic-item { background: var(--bg-card); }
-body.dark-mode .btn-remove:hover, 
-body.dark-mode .btn-remove-sm:hover, 
-body.dark-mode .btn-remove-section:hover { background: #450a0a; color: #ef4444; }
-body.dark-mode .btn-add:hover { background: var(--border); }
-body.dark-mode .dragging { background: var(--bg-app); }
-body.dark-mode .drag-handle:hover { background: var(--bg-app); }
-body.dark-mode .skill-input-wrap { background: var(--bg-card); }
-body.dark-mode .gap-item-wrap { background: var(--bg-app); border-color: var(--secondary); }
-body.dark-mode .section-title-input:hover, 
-body.dark-mode .section-title-input:focus { background: var(--bg-app); }
-body.dark-mode .photo-upload-label { background: var(--bg-app); }
-body.dark-mode .photo-upload-label:hover { background: var(--border); }
+body.dark-mode .template-switcher {
+    background: var(--bg-app);
+    border: 1px solid var(--border);
+}
+
+body.dark-mode .btn-template.active {
+    background: var(--bg-card);
+    color: var(--primary);
+}
+
+body.dark-mode .btn-outline:hover {
+    background-color: var(--border);
+}
+
+body.dark-mode .btn-ghost:hover {
+    background: var(--border);
+}
+
+body.dark-mode .btn-dashed {
+    background-color: var(--bg-app);
+}
+
+body.dark-mode .btn-dashed:hover {
+    background: var(--border);
+}
+
+body.dark-mode .input-grid input,
+body.dark-mode .input-grid textarea,
+body.dark-mode #summary,
+body.dark-mode #languages {
+    background-color: var(--bg-app);
+    color: var(--text-main);
+}
+
+body.dark-mode .dynamic-item {
+    background: var(--bg-card);
+}
+
+body.dark-mode .btn-remove:hover,
+body.dark-mode .btn-remove-sm:hover,
+body.dark-mode .btn-remove-section:hover {
+    background: #450a0a;
+    color: #ef4444;
+}
+
+body.dark-mode .btn-add:hover {
+    background: var(--border);
+}
+
+body.dark-mode .dragging {
+    background: var(--bg-app);
+}
+
+body.dark-mode .drag-handle:hover {
+    background: var(--bg-app);
+}
+
+body.dark-mode .skill-input-wrap {
+    background: var(--bg-card);
+}
+
+body.dark-mode .gap-item-wrap {
+    background: var(--bg-app);
+    border-color: var(--secondary);
+}
+
+body.dark-mode .section-title-input:hover,
+body.dark-mode .section-title-input:focus {
+    background: var(--bg-app);
+}
+
+body.dark-mode .photo-upload-label {
+    background: var(--bg-app);
+}
+
+body.dark-mode .photo-upload-label:hover {
+    background: var(--border);
+}
 
 
 /* ==========================================================================
@@ -621,7 +676,8 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start; /* Ensure top alignment */
+    justify-content: flex-start;
+    /* Ensure top alignment */
 }
 
 .preview-header {
@@ -685,7 +741,7 @@ body {
     color: white;
 }
 
-.zoom-btn svg, 
+.zoom-btn svg,
 .zoom-btn i {
     width: 14px;
     height: 14px;
@@ -727,7 +783,8 @@ body.dark-mode .zoom-btn:hover {
     width: 100%;
     display: flex;
     justify-content: center;
-    align-items: flex-start; /* Pin to top */
+    align-items: flex-start;
+    /* Pin to top */
     padding-bottom: 5rem;
 }
 
@@ -1010,7 +1067,8 @@ body.dark-mode .zoom-btn:hover {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 0 35px; /* Added padding to prevent touching edges */
+    padding: 0 35px;
+    /* Added padding to prevent touching edges */
 }
 
 .t-designer .header-main h1 {
@@ -1083,7 +1141,7 @@ body.dark-mode .zoom-btn:hover {
 .t-designer .cv-col-main {
     float: right;
     width: 130mm;
-    padding: 60px 45px 60px 45px;
+    padding: 60px 45px 15px 45px;
     box-sizing: border-box;
     background: transparent;
 }
@@ -1435,7 +1493,8 @@ body.dark-mode .zoom-btn:hover {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    color: #ef4444; /* Danger red */
+    color: #ef4444;
+    /* Danger red */
     font-size: 1.125rem;
     margin-bottom: 0.75rem;
     font-weight: 700;
@@ -1465,7 +1524,9 @@ body.dark-mode .zoom-btn:hover {
     border-color: #dc2626;
 }
 
-body.dark-mode .modal-overlay { background: rgba(0, 0, 0, 0.6); }
+body.dark-mode .modal-overlay {
+    background: rgba(0, 0, 0, 0.6);
+}
 
 /* ==========================================================================
    8.6 CUSTOM TOOLTIPS

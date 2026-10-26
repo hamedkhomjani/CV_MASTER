@@ -568,9 +568,18 @@ document.addEventListener('DOMContentLoaded', () => {
         if (target && draggedItem !== target && target.parentNode === draggedItem.parentNode) {
             const container = target.parentNode;
             const rect = target.getBoundingClientRect();
-            const midpoint = rect.left + rect.width / 2;
-            
-            if (e.clientX < midpoint) {
+
+            // Use vertical midpoint for dynamic-items (experience), horizontal for skill items
+            let before;
+            if (draggedItem.classList.contains('dynamic-item')) {
+                const midpoint = rect.top + rect.height / 2;
+                before = e.clientY < midpoint;
+            } else {
+                const midpoint = rect.left + rect.width / 2;
+                before = e.clientX < midpoint;
+            }
+
+            if (before) {
                 container.insertBefore(draggedItem, target);
             } else {
                 container.insertBefore(draggedItem, target.nextSibling);
