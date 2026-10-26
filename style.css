@@ -215,6 +215,17 @@ body {
     box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
 }
 
+.btn-ats {
+    background: linear-gradient(135deg, #059669, #0d9488);
+    color: white;
+}
+
+.btn-ats:hover {
+    background: linear-gradient(135deg, #047857, #0f766e);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);
+}
+
 .btn-outline {
     background-color: transparent;
     border: 1.5px solid var(--border);
@@ -688,16 +699,63 @@ body {
     margin-bottom: 1.25rem;
 }
 
-.preview-badge {
+/* View toggle tabs (Visual / ATS) */
+.preview-view-tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--bg-card);
+    border: 1.5px solid var(--border);
+    border-radius: 100px;
+    padding: 3px;
+    box-shadow: var(--shadow-sm);
+}
+
+.view-tab {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 14px;
+    border: none;
+    border-radius: 100px;
+    background: transparent;
+    color: var(--secondary);
+    font-size: 0.72rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+}
+
+.view-tab svg,
+.view-tab i {
+    width: 13px;
+    height: 13px;
+}
+
+.view-tab:hover {
+    color: var(--text-main);
+    background: var(--bg-app);
+}
+
+.view-tab.active {
     background: var(--primary);
     color: white;
-    font-size: 0.7rem;
-    font-weight: 800;
-    padding: 5px 14px;
-    border-radius: 100px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
     box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
+}
+
+.view-tab[data-view="ats"].active {
+    background: linear-gradient(135deg, #059669, #0d9488);
+    box-shadow: 0 2px 8px rgba(5, 150, 105, 0.25);
+}
+
+body.dark-mode .preview-view-tabs {
+    background: #1e293b;
+    border-color: #334155;
+}
+
+body.dark-mode .view-tab:hover {
+    background: #334155;
 }
 
 .preview-zoom-controls {
@@ -787,6 +845,183 @@ body.dark-mode .zoom-btn:hover {
     /* Pin to top */
     padding-bottom: 5rem;
 }
+
+/* ── Visual / ATS mode switching ─────────────────────────────── */
+
+/* Default: ATS panel hidden, visual CV visible */
+.preview-pane #ats-preview            { display: none !important; }
+.preview-pane #zoom-controls          { display: flex !important; }
+
+/* ATS mode: flip visibility */
+.preview-pane.ats-active #cv-preview  { display: none !important; }
+.preview-pane.ats-active #ats-preview { display: block !important; }
+.preview-pane.ats-active #zoom-controls { display: none !important; }
+
+
+.ats-preview-panel {
+    width: 210mm;
+    max-width: 100%;
+    min-height: 297mm;
+    background: white;
+    box-shadow: var(--shadow-lg);
+    font-family: 'Inter', sans-serif;
+    padding: 18mm 20mm;
+    box-sizing: border-box;
+    animation: ats-fade-in 0.25s ease;
+}
+
+@keyframes ats-fade-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.ats-doc {
+    font-family: 'Inter', Georgia, serif;
+    color: #1a1a1a;
+    line-height: 1.55;
+}
+
+/* Name & Title */
+.ats-name {
+    font-size: 26px;
+    font-weight: 800;
+    color: #111;
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+}
+
+.ats-title {
+    font-size: 14px;
+    color: #555;
+    font-weight: 400;
+    margin-bottom: 12px;
+}
+
+/* Contact row */
+.ats-contact {
+    font-size: 11.5px;
+    color: #444;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 2px;
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.ats-link {
+    color: #1a56db;
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.15s;
+}
+.ats-link:hover { border-bottom-color: #1a56db; }
+
+.ats-sep {
+    color: #aaa;
+    margin: 0 2px;
+}
+
+/* Divider */
+.ats-hr {
+    border: none;
+    border-top: 1.5px solid #d1d5db;
+    margin: 0 0 18px 0;
+}
+
+/* Sections */
+.ats-section {
+    margin-bottom: 20px;
+}
+
+.ats-section-heading {
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #374151;
+    padding-bottom: 5px;
+    border-bottom: 1.5px solid #e5e7eb;
+    margin-bottom: 12px;
+}
+
+/* Entries (experience / education) */
+.ats-entry {
+    margin-bottom: 13px;
+}
+
+.ats-entry-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.ats-entry-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #111;
+}
+
+.ats-entry-dates {
+    font-size: 11px;
+    color: #6b7280;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.ats-entry-company {
+    font-size: 12px;
+    font-style: italic;
+    color: #4b5563;
+    margin-top: 1px;
+    margin-bottom: 5px;
+}
+
+/* Body text (summary, description) */
+.ats-body-text {
+    font-size: 12px;
+    color: #374151;
+    line-height: 1.6;
+    margin-top: 4px;
+    white-space: pre-line;
+}
+
+/* Skills chips */
+.ats-skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.ats-skill-chip {
+    font-size: 11px;
+    color: #374151;
+    background: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    padding: 3px 10px;
+    font-weight: 500;
+}
+
+/* Dark mode */
+body.dark-mode .ats-preview-panel {
+    background: #1e293b;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+}
+body.dark-mode .ats-doc          { color: #e2e8f0; }
+body.dark-mode .ats-name         { color: #f1f5f9; }
+body.dark-mode .ats-title        { color: #94a3b8; }
+body.dark-mode .ats-contact      { color: #94a3b8; }
+body.dark-mode .ats-link         { color: #60a5fa; }
+body.dark-mode .ats-link:hover   { border-bottom-color: #60a5fa; }
+body.dark-mode .ats-sep          { color: #475569; }
+body.dark-mode .ats-hr           { border-top-color: #334155; }
+body.dark-mode .ats-section-heading { color: #cbd5e1; border-bottom-color: #334155; }
+body.dark-mode .ats-entry-title  { color: #f1f5f9; }
+body.dark-mode .ats-entry-dates  { color: #64748b; }
+body.dark-mode .ats-entry-company{ color: #94a3b8; }
+body.dark-mode .ats-body-text    { color: #cbd5e1; }
+body.dark-mode .ats-skill-chip   { background: #0f172a; border-color: #334155; color: #cbd5e1; }
 
 .cv-document {
     width: 210mm;

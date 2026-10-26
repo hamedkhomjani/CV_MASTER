@@ -176,6 +176,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // Refresh icons in preview (since they might be hidden/shown)
         lucide.createIcons();
 
+        // Update ATS live preview
+        updateAtsPreview();
+
         // Save to localStorage
         saveData();
     }
@@ -757,6 +760,161 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('add-education').addEventListener('click', () => createItem(eduTemplate, educationList));
     document.getElementById('add-new-section').addEventListener('click', () => createCustomSection());
 
+    // ─────────────────────────────────────────────
+    // ATS LIVE PREVIEW
+    // ─────────────────────────────────────────────
+
+    /** Safely escapes HTML special characters */
+    function escHtml(str) {
+        return String(str || '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+    }
+
+    function updateAtsPreview() {
+        const panel = document.getElementById('ats-preview');
+        if (!panel) return;
+
+        const name      = fullNameInput.value.trim()  || 'Your Name';
+        const title     = jobTitleInput.value.trim();
+        const email     = emailInput.value.trim();
+        const phone     = phoneInput.value.trim();
+        const location  = locationInput.value.trim();
+        const linkedin  = linkedinInput.value.trim();
+        const portfolio = portfolioInput.value.trim();
+        const summary   = summaryInput.value.trim();
+        const langs     = languagesInput.value.trim();
+
+        let html = '<div class="ats-doc">';
+
+        // ── Header ───────────────────────────────
+        html += `<div class="ats-name">${escHtml(name)}</div>`;
+        if (title) html += `<div class="ats-title">${escHtml(title)}</div>`;
+
+        // ── Contact ──────────────────────────────
+        const contactParts = [];
+        if (email) {
+            contactParts.push(`<a href="mailto:${escHtml(email)}" class="ats-link">${escHtml(email)}</a>`);
+        }
+        if (phone)    contactParts.push(`<span>${escHtml(phone)}</span>`);
+        if (location) contactParts.push(`<span>${escHtml(location)}</span>`);
+        if (linkedin) {
+            const href = /^https?:\/\//i.test(linkedin) ? linkedin : 'https://' + linkedin;
+            contactParts.push(`<a href="${escHtml(href)}" target="_blank" class="ats-link">${escHtml(linkedin)}</a>`);
+        }
+        if (portfolio) {
+            const href = /^https?:\/\//i.test(portfolio) ? portfolio : 'https://' + portfolio;
+            contactParts.push(`<a href="${escHtml(href)}" target="_blank" class="ats-link">${escHtml(portfolio)}</a>`);
+        }
+        if (contactParts.length) {
+            html += `<div class="ats-contact">${contactParts.join('<span class="ats-sep"> | </span>')}</div>`;
+        }
+
+        html += '<hr class="ats-hr">';
+
+        // ── Summary ──────────────────────────────
+        if (summary) {
+            html += `<div class="ats-section">
+                <div class="ats-section-heading">Professional Summary</div>
+                <div class="ats-body-text">${escHtml(summary).replace(/\n/g, '<br>')}</div>
+            </div>`;
+        }
+
+        // ── Experience ───────────────────────────
+        const expItems = experienceList.querySelectorAll('.dynamic-item');
+        const expData  = [];
+        expItems.forEach(item => {
+            const t    = item.querySelector('.exp-title').value.trim();
+            const c    = item.querySelector('.exp-company').value.trim();
+            const d    = item.querySelector('.exp-dates').value.trim();
+            const desc = item.querySelector('.exp-desc').value.trim();
+            if (t || c) expData.push({ title: t, company: c, dates: d, desc });
+        });
+        if (expData.length) {
+            html += '<div class="ats-section"><div class="ats-section-heading">Work Experience</div>';
+            expData.forEach(exp => {
+                html += `<div class="ats-entry">
+                    <div class="ats-entry-row">
+                        <span class="ats-entry-title">${escHtml(exp.title || 'Job Title')}</span>
+                        ${exp.dates ? `<span class="ats-entry-dates">${escHtml(exp.dates)}</span>` : ''}
+                    </div>
+                    ${exp.company ? `<div class="ats-entry-company">${escHtml(exp.company)}</div>` : ''}
+                    ${exp.desc ? `<div class="ats-body-text">${escHtml(exp.desc).replace(/\n/g, '<br>')}</div>` : ''}
+                </div>`;
+            });
+            html += '</div>';
+        }
+
+        // ── Education ────────────────────────────
+        const eduItems = educationList.querySelectorAll('.dynamic-item');
+        const eduData  = [];
+        eduItems.forEach(item => {
+            const deg    = item.querySelector('.edu-degree').value.trim();
+            const school = item.querySelector('.edu-school').value.trim();
+            const dates  = item.querySelector('.edu-dates').value.trim();
+            if (deg || school) eduData.push({ degree: deg, school, dates });
+        });
+        if (eduData.length) {
+            html += '<div class="ats-section"><div class="ats-section-heading">Education</div>';
+            eduData.forEach(edu => {
+                html += `<div class="ats-entry">
+                    <div class="ats-entry-row">
+                        <span class="ats-entry-title">${escHtml(edu.degree || 'Degree')}</span>
+                        ${edu.dates ? `<span class="ats-entry-dates">${escHtml(edu.dates)}</span>` : ''}
+                    </div>
+                    ${edu.school ? `<div class="ats-entry-company">${escHtml(edu.school)}</div>` : ''}
+                </div>`;
+            });
+            html += '</div>';
+        }
+
+        // ── Custom Sections ──────────────────────
+        customSectionsContainer.querySelectorAll('.custom-form-section').forEach(sect => {
+            const sTitle = sect.querySelector('.section-title-input').value.trim();
+            const items  = [];
+            sect.querySelectorAll('.skill-input-wrap').forEach(wrap => {
+                const inp = wrap.querySelector('.skill-name');
+                if (inp && inp.value.trim()) items.push(escHtml(inp.value.trim()));
+            });
+            if (items.length && sTitle) {
+                html += `<div class="ats-section">
+                    <div class="ats-section-heading">${escHtml(sTitle)}</div>
+                    <div class="ats-skills">${items.map(i => `<span class="ats-skill-chip">${i}</span>`).join('')}</div>
+                </div>`;
+            }
+        });
+
+        // ── Languages ────────────────────────────
+        if (langs) {
+            html += `<div class="ats-section">
+                <div class="ats-section-heading">Languages</div>
+                <div class="ats-body-text">${escHtml(langs)}</div>
+            </div>`;
+        }
+
+        html += '</div>';
+        panel.innerHTML = html;
+    }
+
+    // ── View Tab Toggle ──────────────────────────
+    const previewPane = document.querySelector('.preview-pane');
+
+    document.querySelectorAll('.view-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.view-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+
+            if (tab.dataset.view === 'ats') {
+                previewPane.classList.add('ats-active');
+                updateAtsPreview();
+            } else {
+                previewPane.classList.remove('ats-active');
+            }
+        });
+    });
+
     // Theme Toggle
     const savedTheme = localStorage.getItem('archicv-theme');
     if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
@@ -864,6 +1022,259 @@ document.addEventListener('DOMContentLoaded', () => {
             cvPreview.style.width = savedWidth;
         }
     });
+
+    // ─────────────────────────────────────────────
+    // ATS-FRIENDLY PDF EXPORT
+    // Uses jsPDF text API directly — no image rendering.
+    // Every word is real, selectable text that ATS parsers can read.
+    // ─────────────────────────────────────────────
+    function generateAtsPdf() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+
+        const PAGE_W = 210;
+        const PAGE_H = 297;
+        const ML = 18;   // left margin
+        const MR = 18;   // right margin
+        const MT = 20;   // top margin
+        const MB = 15;   // bottom margin
+        const CONTENT_W = PAGE_W - ML - MR;
+        let y = MT;
+
+        // ── Helpers ──────────────────────────────
+
+        function newPageIfNeeded(needed = 8) {
+            if (y + needed > PAGE_H - MB) {
+                doc.addPage();
+                y = MT;
+            }
+        }
+
+        function setFont(size, style = 'normal', color = [50, 50, 50]) {
+            doc.setFontSize(size);
+            doc.setFont('helvetica', style);
+            doc.setTextColor(...color);
+        }
+
+        function writeText(text, x, fontSize, style = 'normal', color = [50, 50, 50], lineGap = 5.5) {
+            if (!text) return 0;
+            setFont(fontSize, style, color);
+            const lines = doc.splitTextToSize(String(text), CONTENT_W - (x - ML));
+            newPageIfNeeded(lines.length * lineGap);
+            doc.text(lines, x, y);
+            const moved = lines.length * lineGap;
+            y += moved;
+            return moved;
+        }
+
+        function writeLink(text, x, href, fontSize, color = [30, 100, 200]) {
+            if (!text) return;
+            setFont(fontSize, 'normal', color);
+            const textW = doc.getTextWidth(text);
+            doc.textWithLink(text, x, y, { url: href });
+            // Underline
+            doc.setDrawColor(...color);
+            doc.setLineWidth(0.2);
+            doc.line(x, y + 0.5, x + textW, y + 0.5);
+        }
+
+        function sectionHeading(title) {
+            y += 3;
+            newPageIfNeeded(12);
+            setFont(10, 'bold', [20, 20, 20]);
+            doc.text(title.toUpperCase(), ML, y);
+            y += 2;
+            doc.setDrawColor(160, 160, 160);
+            doc.setLineWidth(0.4);
+            doc.line(ML, y, PAGE_W - MR, y);
+            y += 5;
+        }
+
+        // ── Name & Job Title ─────────────────────
+        const name  = fullNameInput.value.trim()  || 'Your Name';
+        const title = jobTitleInput.value.trim();
+
+        setFont(22, 'bold', [15, 15, 15]);
+        doc.text(name, ML, y);
+        y += 9;
+
+        if (title) {
+            setFont(13, 'normal', [80, 80, 80]);
+            doc.text(title, ML, y);
+            y += 7;
+        }
+
+        // ── Contact Info ─────────────────────────
+        y += 1;
+        const email     = emailInput.value.trim();
+        const phone     = phoneInput.value.trim();
+        const location  = locationInput.value.trim();
+        const linkedin  = linkedinInput.value.trim();
+        const portfolio = portfolioInput.value.trim();
+
+        // Write each contact field, clickable where applicable
+        const contactFontSize = 9;
+        const contactColor    = [60, 60, 60];
+        const linkColor       = [30, 100, 200];
+
+        function contactRow(label, value, href) {
+            if (!value) return;
+            newPageIfNeeded(6);
+            setFont(contactFontSize, 'bold', contactColor);
+            const labelText = label + ': ';
+            const lw = doc.getTextWidth(labelText);
+            doc.text(labelText, ML, y);
+            if (href) {
+                writeLink(value, ML + lw, href, contactFontSize, linkColor);
+            } else {
+                setFont(contactFontSize, 'normal', contactColor);
+                doc.text(value, ML + lw, y);
+            }
+            y += 5.5;
+        }
+
+        contactRow('Email',     email,     email     ? `mailto:${email}`                                            : null);
+        contactRow('Phone',     phone,     null);
+        contactRow('Location',  location,  null);
+        contactRow('LinkedIn',  linkedin,  linkedin  ? (/^https?:\/\//i.test(linkedin)  ? linkedin  : 'https://' + linkedin)  : null);
+        contactRow('Portfolio', portfolio, portfolio ? (/^https?:\/\//i.test(portfolio) ? portfolio : 'https://' + portfolio) : null);
+
+        // Divider
+        y += 2;
+        doc.setDrawColor(180, 180, 180);
+        doc.setLineWidth(0.4);
+        doc.line(ML, y, PAGE_W - MR, y);
+        y += 6;
+
+        // ── Professional Summary ─────────────────
+        const summary = summaryInput.value.trim();
+        if (summary) {
+            sectionHeading('Professional Summary');
+            writeText(summary, ML, 10, 'normal', [55, 55, 55], 5.5);
+            y += 3;
+        }
+
+        // ── Work Experience ──────────────────────
+        const expItems = experienceList.querySelectorAll('.dynamic-item');
+        const expData  = [];
+        expItems.forEach(item => {
+            const t    = item.querySelector('.exp-title').value.trim();
+            const c    = item.querySelector('.exp-company').value.trim();
+            const d    = item.querySelector('.exp-dates').value.trim();
+            const desc = item.querySelector('.exp-desc').value.trim();
+            if (t || c) expData.push({ title: t, company: c, dates: d, desc });
+        });
+
+        if (expData.length > 0) {
+            sectionHeading('Work Experience');
+            expData.forEach(exp => {
+                newPageIfNeeded(14);
+
+                // Job title left, dates right
+                setFont(11, 'bold', [20, 20, 20]);
+                doc.text(exp.title || 'Job Title', ML, y);
+                if (exp.dates) {
+                    setFont(9, 'normal', [110, 110, 110]);
+                    const dw = doc.getTextWidth(exp.dates);
+                    doc.text(exp.dates, PAGE_W - MR - dw, y);
+                }
+                y += 5.5;
+
+                if (exp.company) {
+                    setFont(10, 'italic', [80, 80, 80]);
+                    doc.text(exp.company, ML, y);
+                    y += 5;
+                }
+
+                if (exp.desc) {
+                    setFont(9.5, 'normal', [60, 60, 60]);
+                    const lines = doc.splitTextToSize(exp.desc, CONTENT_W);
+                    lines.forEach(line => {
+                        newPageIfNeeded(5.5);
+                        doc.text(line, ML, y);
+                        y += 5.5;
+                    });
+                }
+                y += 4;
+            });
+        }
+
+        // ── Education ────────────────────────────
+        const eduItems = educationList.querySelectorAll('.dynamic-item');
+        const eduData  = [];
+        eduItems.forEach(item => {
+            const deg    = item.querySelector('.edu-degree').value.trim();
+            const school = item.querySelector('.edu-school').value.trim();
+            const dates  = item.querySelector('.edu-dates').value.trim();
+            if (deg || school) eduData.push({ degree: deg, school, dates });
+        });
+
+        if (eduData.length > 0) {
+            sectionHeading('Education');
+            eduData.forEach(edu => {
+                newPageIfNeeded(12);
+
+                setFont(11, 'bold', [20, 20, 20]);
+                doc.text(edu.degree || 'Degree', ML, y);
+                if (edu.dates) {
+                    setFont(9, 'normal', [110, 110, 110]);
+                    const dw = doc.getTextWidth(edu.dates);
+                    doc.text(edu.dates, PAGE_W - MR - dw, y);
+                }
+                y += 5.5;
+
+                if (edu.school) {
+                    setFont(10, 'italic', [80, 80, 80]);
+                    doc.text(edu.school, ML, y);
+                    y += 5;
+                }
+                y += 3;
+            });
+        }
+
+        // ── Custom Sections (Skills, Tools, etc.) ─
+        const customSects = customSectionsContainer.querySelectorAll('.custom-form-section');
+        customSects.forEach(sect => {
+            const sTitle = sect.querySelector('.section-title-input').value.trim();
+            const itemWraps = sect.querySelectorAll('.skill-input-wrap');
+            const items = [];
+            itemWraps.forEach(wrap => {
+                const inp = wrap.querySelector('.skill-name');
+                if (inp) {
+                    const v = inp.value.trim();
+                    if (v) items.push(v);
+                }
+                // Gaps become a soft separator — skip in ATS
+            });
+
+            if (items.length > 0 && sTitle) {
+                sectionHeading(sTitle);
+                setFont(10, 'normal', [55, 55, 55]);
+                // Write items as a comma-separated line; ATS parsers love this
+                const line = items.join(',  ');
+                const lines = doc.splitTextToSize(line, CONTENT_W);
+                lines.forEach(l => {
+                    newPageIfNeeded(5.5);
+                    doc.text(l, ML, y);
+                    y += 5.5;
+                });
+                y += 3;
+            }
+        });
+
+        // ── Languages ────────────────────────────
+        const langs = languagesInput.value.trim();
+        if (langs) {
+            sectionHeading('Languages');
+            writeText(langs, ML, 10, 'normal', [55, 55, 55], 5.5);
+        }
+
+        // ── Save ─────────────────────────────────
+        const namePart = (fullNameInput.value || 'Resume').trim().replace(/\s+/g, '_');
+        doc.save(`${namePart}_ATS.pdf`);
+    }
+
+    document.getElementById('ats-export-btn').addEventListener('click', generateAtsPdf);
 
     // --- JSON Import / Export ---
     const exportBtn = document.getElementById('export-json-btn');

@@ -18,6 +18,8 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <!-- html2pdf.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- jsPDF (standalone, for ATS text-based export) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link rel="stylesheet" href="style.css?v=102">
 </head>
 
@@ -51,6 +53,10 @@
                 <button id="reset-btn" class="btn btn-outline btn-tooltip" data-tooltip="Clear All Data">
                     <i data-lucide="refresh-cw"></i>
                     <span>Reset</span>
+                </button>
+                <button id="ats-export-btn" class="btn btn-ats btn-tooltip" data-tooltip="ATS-Friendly Text PDF (for job applications)">
+                    <i data-lucide="file-check"></i>
+                    <span>ATS Export</span>
                 </button>
                 <button id="download-btn" class="btn btn-primary btn-tooltip" data-tooltip="Generate PDF Document">
                     <i data-lucide="download"></i>
@@ -178,8 +184,17 @@
             <!-- Right Side: Live Preview -->
             <section class="preview-pane">
                 <div class="preview-header">
-                    <span class="preview-badge">Live Preview</span>
-                    <div class="preview-zoom-controls">
+                    <div class="preview-view-tabs">
+                        <button class="view-tab active" id="tab-visual" data-view="visual">
+                            <i data-lucide="eye"></i>
+                            <span>Visual</span>
+                        </button>
+                        <button class="view-tab" id="tab-ats" data-view="ats">
+                            <i data-lucide="file-check"></i>
+                            <span>ATS</span>
+                        </button>
+                    </div>
+                    <div class="preview-zoom-controls" id="zoom-controls">
                         <button type="button" id="zoom-out" class="zoom-btn" title="Zoom Out"><i data-lucide="minus"></i></button>
                         <span id="zoom-value" class="zoom-text" title="Click to reset (100%)">100%</span>
                         <button type="button" id="zoom-in" class="zoom-btn" title="Zoom In"><i data-lucide="plus"></i></button>
@@ -263,6 +278,9 @@
                         <!-- Page Break Indicator (Hidden in PDF) -->
                         <div class="page-break-indicator" data-html2canvas-ignore>PAGE BREAK (A4)</div>
                     </div>
+
+                    <!-- ATS Live Preview Panel -->
+                    <div id="ats-preview" class="ats-preview-panel"></div>
                 </div>
             </section>
         </main>
