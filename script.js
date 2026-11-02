@@ -1381,6 +1381,515 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // ─────────────────────────────────────────────
+    // ATS CV TEXT IMPORT
+    // Parses plain text from an ATS-style CV and populates the form.
+    // ─────────────────────────────────────────────
+
+    const atsImportModal    = document.getElementById('ats-import-modal');
+    const atsImportTextarea = document.getElementById('ats-import-textarea');
+    const atsImportFeedback = document.getElementById('ats-import-feedback');
+    const atsImportFileInput = document.getElementById('ats-import-file-input');
+    const atsImportCancelBtn = document.getElementById('ats-import-cancel');
+    const atsImportConfirmBtn = document.getElementById('ats-import-confirm');
+    const atsImportOpenBtn  = document.getElementById('import-ats-btn');
+
+    function openAtsImportModal() {
+        atsImportTextarea.value = '';
+        atsImportFeedback.style.display = 'none';
+        atsImportFeedback.className = 'ats-import-feedback';
+        atsImportModal.classList.add('active');
+        lucide.createIcons();
+        atsImportTextarea.focus();
+    }
+
+    function closeAtsImportModal() {
+        atsImportModal.classList.remove('active');
+        atsImportFileInput.value = '';
+    }
+
+    atsImportOpenBtn.addEventListener('click', openAtsImportModal);
+    atsImportCancelBtn.addEventListener('click', closeAtsImportModal);
+    atsImportModal.addEventListener('click', (e) => {
+        if (e.target === atsImportModal) closeAtsImportModal();
+    });
+
+    // Upload .txt file → paste into textarea
+    atsImportFileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            atsImportTextarea.value = ev.target.result;
+            atsImportFeedback.style.display = 'none';
+        };
+        reader.readAsText(file);
+    });
+
+    /**
+     * parseAtsText(text) → { personal, experience, education, customSections }
+     *
+     * Strategy:
+     *  1. Find the candidate name (first non-empty line that is NOT a label).
+     *  2. Find the job title (second non-empty line or a labeled "Title:" line).
+     *  3. Scan contact lines for email / phone / location / linkedin / portfolio.
+     *  4. Split remaining text into named sections (PROFESSIONAL SUMMARY, WORK EXPERIENCE …).
+     *  5. Parse each section into structured data.
+     */
+    function parseAtsText(raw) {
+        const lines = raw.split(/\r?\n/);
+
+        // ── helpers ──────────────────────────────────────────────────────────
+        const trim    = s => String(s || '').trim();
+        const isEmpty = s => trim(s) === '';
+
+        // Known section heading keywords (order matters for matching)
+        const SECTION_KEYWORDS = [
+            { key: 'summary',    patterns: [/^(professional\s*)?summary$/i, /^profile$/i, /^about(\s*me)?$/i, /^objective$/i] },
+            { key: 'experience', patterns: [/^(work\s*)?(experience|history)$/i, /^employment(\s*history)?$/i, /^career(\s*history)?$/i] },
+            { key: 'education',  patterns: [/^education(\s*&?\s*training)?$/i, /^academic(\s*background)?$/i, /^qualifications?$/i] },
+            { key: 'skills',     patterns: [/^(technical\s*)?skills?$/i, /^core\s*competenc(y|ies)$/i, /^key\s*skills?$/i] },
+            { key: 'languages',  patterns: [/^languages?$/i] },
+            { key: 'custom',     patterns: [/./] },  // catch-all: any ALL-CAPS or title-case heading
+        ];
+
+        function classifyHeading(line) {
+            const t = trim(line);
+            // Must look like a heading: all caps, or title-case short phrase, no trailing punctuation
+            const looksLikeHeading =
+                (t === t.toUpperCase() && t.length >= 3 && t.length <= 60 && /[A-Z]/.test(t)) ||
+                (/^[A-Z][a-zA-Z\s&\/()–-]{2,50}$/.test(t) && t.split(' ').length <= 6);
+
+            if (!looksLikeHeading) return null;
+
+            for (const sect of SECTION_KEYWORDS) {
+                for (const pat of sect.patterns) {
+                    if (pat.test(t)) return { key: sect.key, title: t };
+                }
+            }
+            // catch-all: treat as a custom section
+            return { key: 'custom', title: t };
+        }
+
+        // ── contact field extraction ──────────────────────────────────────────
+        function extractEmail(text) {
+            const m = text.match(/[\w.+%-]+@[\w.-]+\.[a-z]{2,}/i);
+            return m ? m[0] : '';
+        }
+
+        function extractPhone(text) {
+            // Looks for labelled phone: or a number pattern
+            const labeled = text.match(/(?:phone|mobile|tel|ph)[:\s]+([+\d\s().\-–]{6,20})/i);
+            if (labeled) return trim(labeled[1]);
+            const m = text.match(/(?<![.\d])[+]?[\d][\d\s().\-–]{6,17}[\d]/);
+            return m ? trim(m[0]) : '';
+        }
+
+        function extractLinkedIn(text) {
+            const m = text.match(/(?:linkedin\.com\/in\/|linkedin:\s*)([^\s,|]+)/i);
+            if (m) return 'linkedin.com/in/' + trim(m[1].replace(/^\//, ''));
+            return '';
+        }
+
+        function extractPortfolio(text) {
+            // Looks for portfolio / website / github URL (not linkedin/email)
+            const m = text.match(/(?:portfolio|website|github|behance|dribbble|web)[:\s]+([^\s,|]+)/i);
+            if (m) return trim(m[1]);
+            // Generic URL not already matched as linkedin
+            const urls = text.match(/https?:\/\/[^\s,|]+/gi) || [];
+            for (const u of urls) {
+                if (!/linkedin/.test(u) && !/mailto/.test(u)) return u;
+            }
+            return '';
+        }
+
+        function extractLocation(text) {
+            const m = text.match(/(?:location|address|city|based in)[:\s]+([^\n|,]+)/i);
+            if (m) return trim(m[1]);
+            return '';
+        }
+
+        // ── Split into raw sections ───────────────────────────────────────────
+        const sections = [];    // [{heading: str|null, key: str, lines: []}]
+        let currentSection = { heading: null, key: 'header', lines: [] };
+
+        for (const line of lines) {
+            const h = classifyHeading(line);
+            if (h) {
+                sections.push(currentSection);
+                currentSection = { heading: h.title, key: h.key, lines: [] };
+            } else {
+                currentSection.lines.push(line);
+            }
+        }
+        sections.push(currentSection);
+
+        // ── Parse the header section ──────────────────────────────────────────
+        const headerSection = sections.find(s => s.key === 'header') || { lines: [] };
+        const nonEmptyHeader = headerSection.lines.filter(l => !isEmpty(l));
+
+        let name = '', jobTitle = '', email = '', phone = '', location = '';
+        let linkedin = '', portfolio = '';
+
+        // Scan all header lines for contact fields
+        const contactLines = [];
+        for (const line of nonEmptyHeader) {
+            const e = extractEmail(line);
+            if (e && !email) email = e;
+            const p = extractPhone(line);
+            if (p && !phone) phone = p;
+            const li = extractLinkedIn(line);
+            if (li && !linkedin) linkedin = li;
+            const po = extractPortfolio(line);
+            if (po && !portfolio) portfolio = po;
+            const lo = extractLocation(line);
+            if (lo && !location) location = lo;
+
+            // Check for labeled fields  (Email: foo | Phone: bar)
+            if (/^(email|phone|mobile|location|linkedin|portfolio|website|tel|address)/i.test(line)) {
+                contactLines.push(line);
+            }
+        }
+
+        // First line that is not a contact line → name
+        for (const line of nonEmptyHeader) {
+            if (!/^(email|phone|mobile|location|linkedin|portfolio|website|tel|address|http|\+?\d)/i.test(line)
+                && !extractEmail(line)
+                && !extractPhone(line)
+                && !isEmpty(line)) {
+                if (!name) { name = trim(line); continue; }
+                if (!jobTitle) { jobTitle = trim(line); break; }
+            }
+        }
+
+        // Also scan non-header sections for labeled contact fields (some CVs put them top-of-section)
+        for (const sect of sections) {
+            if (sect.key !== 'header') continue; // already done above
+        }
+
+        // Also look in other sections' first lines if contact info still missing
+        for (const sect of sections) {
+            if (sect.key === 'header') continue;
+            const firstLines = sect.lines.slice(0, 3);
+            for (const line of firstLines) {
+                if (!email) email = extractEmail(line);
+                if (!phone) phone = extractPhone(line);
+                if (!linkedin) linkedin = extractLinkedIn(line);
+                if (!portfolio) portfolio = extractPortfolio(line);
+                if (!location) location = extractLocation(line);
+            }
+        }
+
+        // ── Parse SUMMARY ─────────────────────────────────────────────────────
+        let summary = '';
+        const summarySect = sections.find(s => s.key === 'summary');
+        if (summarySect) {
+            summary = summarySect.lines.filter(l => !isEmpty(l)).join('\n');
+        }
+
+        // ── Parse EXPERIENCE ──────────────────────────────────────────────────
+        const experience = [];
+        const expSect = sections.find(s => s.key === 'experience');
+
+        if (expSect) {
+            // Group lines into entries. An entry starts when we see a bold/title-like line
+            // followed by company+date info, then description lines.
+            const expLines = expSect.lines.filter(l => !isEmpty(l));
+            
+            // Date pattern: years, month+year, or "Present"
+            const DATE_PAT = /\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec|\d{4}|present|current|now)\b/i;
+            
+            let i = 0;
+            while (i < expLines.length) {
+                const line = expLines[i];
+
+                // Detect a job title line: not starting with bullet, not a date-only line
+                const isBullet  = /^[-•*▪▸►]/.test(trim(line));
+                const isDateOnly = /^\d{4}\s*[-–]\s*(\d{4}|present)/i.test(trim(line));
+
+                if (!isBullet && !isDateOnly) {
+                    let entryTitle   = trim(line);
+                    let entryCompany = '';
+                    let entryDates   = '';
+                    const descLines  = [];
+
+                    i++;
+
+                    // Try next few lines for company / dates
+                    while (i < expLines.length) {
+                        const next = trim(expLines[i]);
+                        const isBulletNext = /^[-•*▪▸►]/.test(next);
+                        const looksLikeNewTitle = !isBulletNext && !DATE_PAT.test(next) && i > 0
+                            && !entryDates && !entryCompany;
+
+                        // Check if this looks like company + dates on the same line (common pattern)
+                        // e.g. "Acme Corp | 2020 - 2022" or "Acme Corp   Jan 2020 – Present"
+                        const combinedMatch = next.match(/^(.+?)\s*[|,]\s*(.+\d{4}.*)$/);
+                        if (combinedMatch && DATE_PAT.test(combinedMatch[2])) {
+                            if (!entryCompany) entryCompany = trim(combinedMatch[1]);
+                            if (!entryDates)   entryDates   = trim(combinedMatch[2]);
+                            i++; continue;
+                        }
+
+                        // Line that contains a date range → dates line
+                        if (DATE_PAT.test(next) && /[-–]/.test(next)) {
+                            if (!entryDates) {
+                                // It might have company before date: "Acme Corp  2020–2022"
+                                const m = next.match(/^([^0-9]+?)\s{2,}(.+)$/) ||
+                                          next.match(/^([^0-9]+?)\s+((?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\s+\d{4}.+)/i);
+                                if (m && m[1] && !entryCompany) {
+                                    entryCompany = trim(m[1]);
+                                    entryDates   = trim(m[2]);
+                                } else {
+                                    if (!entryCompany && !DATE_PAT.test(next.replace(/\d{4}[-–\s]+\d{4}/g, ''))) {
+                                        entryCompany = trim(next);
+                                    } else {
+                                        entryDates = trim(next);
+                                    }
+                                }
+                            } else {
+                                descLines.push(expLines[i]);
+                            }
+                            i++; continue;
+                        }
+
+                        // Pure year range without dashes: "2020 2022" – unlikely, skip
+                        // Company line (short, non-bullet, before we have a company)
+                        if (!isBulletNext && !entryCompany && !DATE_PAT.test(next)) {
+                            // If next line also looks like a title (and we already have company) → new entry
+                            if (entryCompany) break;
+                            entryCompany = trim(next);
+                            i++; continue;
+                        }
+
+                        // If next line is a bullet or we already have company+dates → description
+                        if (isBulletNext || (entryCompany && entryDates)) {
+                            descLines.push(expLines[i]);
+                            i++;
+                            // Keep collecting description lines
+                            while (i < expLines.length) {
+                                const dl = trim(expLines[i]);
+                                const dlBullet = /^[-•*▪▸►]/.test(dl);
+                                // Stop if we hit what looks like a new job title (non-bullet, non-date, short)
+                                if (!dlBullet && dl.length < 60 && !DATE_PAT.test(dl) && dl.length > 0) {
+                                    // Could be new entry – peek ahead
+                                    const next2 = expLines[i + 1] ? trim(expLines[i + 1]) : '';
+                                    if (DATE_PAT.test(next2) || /[|,]/.test(next2)) break;
+                                }
+                                descLines.push(expLines[i]);
+                                i++;
+                            }
+                            break;
+                        }
+
+                        // Otherwise stop collecting for this entry
+                        break;
+                    }
+
+                    if (entryTitle) {
+                        experience.push({
+                            title:   entryTitle,
+                            company: entryCompany,
+                            dates:   entryDates,
+                            desc:    descLines.map(l => trim(l)).filter(Boolean).join('\n')
+                        });
+                    }
+                } else {
+                    i++; // skip stray bullet without a title
+                }
+            }
+        }
+
+        // ── Parse EDUCATION ───────────────────────────────────────────────────
+        const education = [];
+        const eduSect = sections.find(s => s.key === 'education');
+
+        if (eduSect) {
+            const eduLines = eduSect.lines.filter(l => !isEmpty(l));
+            const DATE_PAT = /\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec|\d{4}|present)\b/i;
+
+            let i = 0;
+            while (i < eduLines.length) {
+                const line = trim(eduLines[i]);
+                const isBullet = /^[-•*▪▸►]/.test(line);
+                if (isBullet) { i++; continue; }
+
+                let degree = line;
+                let school = '';
+                let dates  = '';
+                i++;
+
+                while (i < eduLines.length) {
+                    const next = trim(eduLines[i]);
+                    const combined = next.match(/^(.+?)\s*[|,]\s*(.+)$/);
+                    if (combined && DATE_PAT.test(combined[2])) {
+                        if (!school) school = trim(combined[1]);
+                        if (!dates)  dates  = trim(combined[2]);
+                        i++; break;
+                    }
+                    if (DATE_PAT.test(next)) {
+                        if (!dates) dates = next;
+                        i++; break;
+                    }
+                    if (!school) { school = next; i++; }
+                    else break;
+                }
+
+                if (degree) education.push({ degree, school, dates });
+            }
+        }
+
+        // ── Parse LANGUAGES ───────────────────────────────────────────────────
+        let languages = '';
+        const langSect = sections.find(s => s.key === 'languages');
+        if (langSect) {
+            languages = langSect.lines.filter(l => !isEmpty(l)).join(', ');
+        }
+
+        // ── Parse CUSTOM sections (Skills, Tools, etc.) ───────────────────────
+        const customSections = [];
+        const skillSect = sections.find(s => s.key === 'skills');
+        if (skillSect) {
+            const items = [];
+            skillSect.lines.filter(l => !isEmpty(l)).forEach(l => {
+                // Could be comma-separated, bullet, or one per line
+                if (/[,;]/.test(l)) {
+                    l.split(/[,;]/).map(s => trim(s)).filter(Boolean).forEach(s => items.push(s));
+                } else {
+                    const t = trim(l).replace(/^[-•*▪▸►]\s*/, '');
+                    if (t) items.push(t);
+                }
+            });
+            if (items.length) customSections.push({ title: 'Skills', items });
+        }
+
+        // Any other custom sections
+        for (const sect of sections) {
+            if (sect.key !== 'custom') continue;
+            const items = [];
+            sect.lines.filter(l => !isEmpty(l)).forEach(l => {
+                if (/[,;]/.test(l)) {
+                    l.split(/[,;]/).map(s => trim(s)).filter(Boolean).forEach(s => items.push(s));
+                } else {
+                    const t = trim(l).replace(/^[-•*▪▸►]\s*/, '');
+                    if (t) items.push(t);
+                }
+            });
+            if (items.length && sect.heading) {
+                customSections.push({ title: sect.heading, items });
+            }
+        }
+
+        return {
+            personal: { fullName: name, jobTitle, email, phone, location, linkedin, portfolio, summary, languages },
+            experience,
+            education,
+            customSections
+        };
+    }
+
+    function applyParsedData(data) {
+        // Personal
+        if (data.personal.fullName)  fullNameInput.value  = data.personal.fullName;
+        if (data.personal.jobTitle)  jobTitleInput.value  = data.personal.jobTitle;
+        if (data.personal.email)     emailInput.value     = data.personal.email;
+        if (data.personal.phone)     phoneInput.value     = data.personal.phone;
+        if (data.personal.location)  locationInput.value  = data.personal.location;
+        if (data.personal.linkedin)  linkedinInput.value  = data.personal.linkedin;
+        if (data.personal.portfolio) portfolioInput.value = data.personal.portfolio;
+        if (data.personal.summary)   summaryInput.value   = data.personal.summary;
+        if (data.personal.languages) languagesInput.value = data.personal.languages;
+
+        // Experience
+        if (data.experience && data.experience.length > 0) {
+            experienceList.innerHTML = '';
+            data.experience.forEach(exp => {
+                createItem(expTemplate, experienceList);
+                const last = experienceList.lastElementChild;
+                if (last.querySelector('.exp-title'))   last.querySelector('.exp-title').value   = exp.title   || '';
+                if (last.querySelector('.exp-company')) last.querySelector('.exp-company').value = exp.company || '';
+                if (last.querySelector('.exp-dates'))   last.querySelector('.exp-dates').value   = exp.dates   || '';
+                if (last.querySelector('.exp-desc'))    last.querySelector('.exp-desc').value    = exp.desc    || '';
+            });
+        }
+
+        // Education
+        if (data.education && data.education.length > 0) {
+            educationList.innerHTML = '';
+            data.education.forEach(edu => {
+                createItem(eduTemplate, educationList);
+                const last = educationList.lastElementChild;
+                if (last.querySelector('.edu-degree')) last.querySelector('.edu-degree').value = edu.degree || '';
+                if (last.querySelector('.edu-school')) last.querySelector('.edu-school').value = edu.school || '';
+                if (last.querySelector('.edu-dates'))  last.querySelector('.edu-dates').value  = edu.dates  || '';
+            });
+        }
+
+        // Custom Sections
+        if (data.customSections && data.customSections.length > 0) {
+            // Append rather than replace so existing custom sections are preserved
+            // unless the section title matches an existing one
+            const existingTitles = Array.from(
+                customSectionsContainer.querySelectorAll('.section-title-input')
+            ).map(el => el.value.trim().toLowerCase());
+
+            data.customSections.forEach(sectData => {
+                const isDuplicate = existingTitles.includes((sectData.title || '').trim().toLowerCase());
+                if (!isDuplicate) createCustomSection(sectData);
+            });
+        }
+
+        updatePreview();
+    }
+
+    function showAtsImportFeedback(msg, isError = false) {
+        atsImportFeedback.textContent = msg;
+        atsImportFeedback.className = 'ats-import-feedback' + (isError ? ' error' : '');
+        atsImportFeedback.style.display = 'block';
+    }
+
+    atsImportConfirmBtn.addEventListener('click', () => {
+        const text = atsImportTextarea.value.trim();
+        if (!text) {
+            showAtsImportFeedback('Please paste CV text or upload a .txt file first.', true);
+            return;
+        }
+
+        try {
+            const parsed = parseAtsText(text);
+
+            // Build feedback summary
+            const parts = [];
+            if (parsed.personal.fullName)        parts.push('Name');
+            if (parsed.personal.email)            parts.push('Email');
+            if (parsed.personal.phone)            parts.push('Phone');
+            if (parsed.personal.location)         parts.push('Location');
+            if (parsed.personal.linkedin)         parts.push('LinkedIn');
+            if (parsed.personal.portfolio)        parts.push('Portfolio');
+            if (parsed.personal.summary)          parts.push('Summary');
+            if (parsed.personal.languages)        parts.push('Languages');
+            if (parsed.experience.length)         parts.push(`${parsed.experience.length} experience entr${parsed.experience.length > 1 ? 'ies' : 'y'}`);
+            if (parsed.education.length)          parts.push(`${parsed.education.length} education entr${parsed.education.length > 1 ? 'ies' : 'y'}`);
+            if (parsed.customSections.length)     parts.push(`${parsed.customSections.length} custom section${parsed.customSections.length > 1 ? 's' : ''}`);
+
+            if (parts.length === 0) {
+                showAtsImportFeedback('Could not detect any fields in the provided text. Please check the format and try again.', true);
+                return;
+            }
+
+            applyParsedData(parsed);
+            showAtsImportFeedback(`✓ Imported: ${parts.join(', ')}.`);
+
+            // Auto-close after a moment
+            setTimeout(closeAtsImportModal, 1800);
+        } catch (err) {
+            console.error('ATS import error:', err);
+            showAtsImportFeedback('Parsing failed. Please check the CV text and try again.', true);
+        }
+    });
+
+    // ── end ATS CV Text Import ─────────────────────────────────────────────────
+
     // Reset Data
     resetBtn.addEventListener('click', () => {
         showConfirmModal("Reset to default content? This will clear all your current data.", () => {

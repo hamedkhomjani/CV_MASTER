@@ -20,7 +20,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <!-- jsPDF (standalone, for ATS text-based export) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <link rel="stylesheet" href="style.css?v=102">
+    <link rel="stylesheet" href="style.css?v=103">
 </head>
 
 <body>
@@ -49,6 +49,9 @@
                     <i data-lucide="folder-open"></i>
                 </button>
                 <input type="file" id="import-input" accept=".json" style="display:none;">
+                <button id="import-ats-btn" class="btn btn-outline btn-tooltip" data-tooltip="Import from ATS CV Text">
+                    <i data-lucide="scan-text"></i>
+                </button>
                 <div class="actions-divider"></div>
                 <button id="reset-btn" class="btn btn-outline btn-tooltip" data-tooltip="Clear All Data">
                     <i data-lucide="refresh-cw"></i>
@@ -359,6 +362,32 @@
             </div>
         </section>
     </template>
+
+    <!-- ATS Import Modal -->
+    <div id="ats-import-modal" class="modal-overlay">
+        <div class="modal-content ats-import-modal-content">
+            <h3 class="modal-title ats-import-modal-title">
+                <i data-lucide="scan-text"></i> Import from ATS CV
+            </h3>
+            <p class="modal-text">
+                Paste the plain text from your ATS CV below, or upload a <code>.txt</code> file. The parser will auto-detect sections and fill in the form.
+            </p>
+            <div class="ats-import-file-row">
+                <label for="ats-import-file-input" class="btn btn-outline" style="cursor:pointer;">
+                    <i data-lucide="upload"></i> Upload .txt file
+                </label>
+                <input type="file" id="ats-import-file-input" accept=".txt,text/plain" style="display:none;">
+            </div>
+            <textarea id="ats-import-textarea" class="ats-import-textarea" placeholder="Paste your ATS CV text here...&#10;&#10;Example:&#10;John Doe&#10;Senior Product Designer&#10;Email: john@example.com | Phone: +1 555 0000&#10;&#10;PROFESSIONAL SUMMARY&#10;...&#10;&#10;WORK EXPERIENCE&#10;Job Title&#10;Company Name | 2020 - Present&#10;- Responsibilities...&#10;&#10;EDUCATION&#10;Degree&#10;University | 2016 - 2020"></textarea>
+            <div id="ats-import-feedback" class="ats-import-feedback" style="display:none;"></div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-outline" id="ats-import-cancel">Cancel</button>
+                <button type="button" class="btn btn-primary" id="ats-import-confirm">
+                    <i data-lucide="check"></i> Import Data
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- Custom Modal -->
     <div id="confirm-modal" class="modal-overlay">
