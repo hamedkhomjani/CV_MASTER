@@ -20,7 +20,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <!-- jsPDF (standalone, for ATS text-based export) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <link rel="stylesheet" href="style.css?v=103">
+    <link rel="stylesheet" href="style.css?v=104">
 </head>
 
 <body>
@@ -105,7 +105,8 @@
                                 </div>
                                 <div class="field">
                                     <label for="phone"><i data-lucide="phone"></i> Phone</label>
-                                    <input type="tel" id="phone" placeholder="+1 (555) 123-4567">
+                                    <input type="tel" id="phone" placeholder="+46 76 257 32 73">
+                                    <span class="field-error-msg" id="phone-error" style="display:none;">Invalid phone number format (e.g. +46 76 257 32 73)</span>
                                 </div>
                                 <div class="field">
                                     <label for="location"><i data-lucide="map-pin"></i> Location</label>

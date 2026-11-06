@@ -359,6 +359,30 @@ body {
     outline: none;
 }
 
+input.input-invalid,
+textarea.input-invalid {
+    border-color: #ef4444 !important;
+    background-color: #fef2f2 !important;
+}
+
+body.dark-mode input.input-invalid,
+body.dark-mode textarea.input-invalid {
+    border-color: #ef4444 !important;
+    background-color: #450a0a !important;
+}
+
+.field-error-msg {
+    font-size: 0.75rem;
+    color: #ef4444;
+    margin-top: 4px;
+    display: block;
+    line-height: 1.3;
+}
+
+body.dark-mode .field-error-msg {
+    color: #fca5a5;
+}
+
 .dynamic-item {
     background: white;
     border: 1px solid var(--border);

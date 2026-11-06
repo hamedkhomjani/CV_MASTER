@@ -129,18 +129,62 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /**
-     * Updates a URL field (linkedin/portfolio) as a clickable anchor in the preview.
+     * Validates international and standard phone numbers.
+     * Rejects random text, too short (< 7 digits), too long (> 15 digits),
+     * illegal characters, or repeating dummy numbers (e.g. 0000000).
+     */
+    function isValidPhone(phoneStr) {
+        if (!phoneStr) return true;
+        const trimmed = phoneStr.trim();
+        if (!trimmed) return true;
+
+        // Only +, digits, spaces, hyphens, dots, parentheses allowed
+        if (!/^[+]?[\d\s().\-–]{7,25}$/.test(trimmed)) {
+            return false;
+        }
+
+        // Only one '+' allowed, and must be at index 0
+        if ((trimmed.match(/\+/g) || []).length > 1 || (trimmed.indexOf('+') > 0)) {
+            return false;
+        }
+
+        // Digits count check (E.164 standard: 7 to 15 digits)
+        const digits = trimmed.replace(/\D/g, '');
+        if (digits.length < 7 || digits.length > 15) {
+            return false;
+        }
+
+        // Must not be a repeated single digit (e.g. 0000000, 1111111)
+        if (/^(\d)\1+$/.test(digits)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Updates a URL field (linkedin/portfolio/phone) as a clickable anchor in the preview.
      */
     function updateUrlField(input, preview, wrapper, scheme = 'https') {
         const val = input.value.trim();
         if (val) {
+            if (scheme === 'tel' && !isValidPhone(val)) {
+                preview.innerHTML = '';
+                wrapper.style.display = 'none';
+                return;
+            }
             let href;
+            let targetAttr = ' target="_blank"';
             if (scheme === 'mailto') {
                 href = `mailto:${val}`;
+            } else if (scheme === 'tel') {
+                const cleanNumber = val.replace(/[^\d+]/g, '');
+                href = `tel:${cleanNumber}`;
+                targetAttr = '';
             } else {
                 href = /^https?:\/\//i.test(val) ? val : 'https://' + val;
             }
-            preview.innerHTML = `<a href="${href}" target="_blank" class="cv-link">${val}</a>`;
+            preview.innerHTML = `<a href="${href}"${targetAttr} class="cv-link">${val}</a>`;
             wrapper.style.display = 'flex';
         } else {
             preview.innerHTML = '';
@@ -152,10 +196,24 @@ document.addEventListener('DOMContentLoaded', () => {
      * Main update function triggered on any input
      */
     function updatePreview() {
+        // Phone validation state
+        const phoneVal = phoneInput.value.trim();
+        const phoneError = document.getElementById('phone-error');
+        const isPhoneValid = isValidPhone(phoneVal);
+        if (phoneError) {
+            if (!isPhoneValid) {
+                phoneInput.classList.add('input-invalid');
+                phoneError.style.display = 'block';
+            } else {
+                phoneInput.classList.remove('input-invalid');
+                phoneError.style.display = 'none';
+            }
+        }
+
         updateText(fullNameInput, previewName);
         updateText(jobTitleInput, previewTitle);
         updateUrlField(emailInput, previewEmail, document.getElementById('preview-email-wrap'), 'mailto');
-        updateText(phoneInput, previewPhone, document.getElementById('preview-phone-wrap'));
+        updateUrlField(phoneInput, previewPhone, document.getElementById('preview-phone-wrap'), 'tel');
         updateText(locationInput, previewLocation, document.getElementById('preview-location-wrap'));
         updateUrlField(linkedinInput, previewLinkedin, document.getElementById('preview-linkedin-wrap'));
         updateUrlField(portfolioInput, previewPortfolio, document.getElementById('preview-portfolio-wrap'));
@@ -798,7 +856,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (email) {
             contactParts.push(`<a href="mailto:${escHtml(email)}" class="ats-link">${escHtml(email)}</a>`);
         }
-        if (phone)    contactParts.push(`<span>${escHtml(phone)}</span>`);
+        if (phone && isValidPhone(phone)) {
+            const cleanPhone = phone.replace(/[^\d+]/g, '');
+            contactParts.push(`<a href="tel:${escHtml(cleanPhone)}" class="ats-link">${escHtml(phone)}</a>`);
+        }
         if (location) contactParts.push(`<span>${escHtml(location)}</span>`);
         if (linkedin) {
             const href = /^https?:\/\//i.test(linkedin) ? linkedin : 'https://' + linkedin;
@@ -1133,8 +1194,10 @@ document.addEventListener('DOMContentLoaded', () => {
             y += 5.5;
         }
 
+        const isPhoneValid = phone && isValidPhone(phone);
+        const cleanPhone = isPhoneValid ? phone.replace(/[^\d+]/g, '') : '';
         contactRow('Email',     email,     email     ? `mailto:${email}`                                            : null);
-        contactRow('Phone',     phone,     null);
+        contactRow('Phone',     isPhoneValid ? phone : null, cleanPhone ? `tel:${cleanPhone}`                       : null);
         contactRow('Location',  location,  null);
         contactRow('LinkedIn',  linkedin,  linkedin  ? (/^https?:\/\//i.test(linkedin)  ? linkedin  : 'https://' + linkedin)  : null);
         contactRow('Portfolio', portfolio, portfolio ? (/^https?:\/\//i.test(portfolio) ? portfolio : 'https://' + portfolio) : null);
@@ -1479,10 +1542,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         function extractPhone(text) {
             // Looks for labelled phone: or a number pattern
-            const labeled = text.match(/(?:phone|mobile|tel|ph)[:\s]+([+\d\s().\-–]{6,20})/i);
-            if (labeled) return trim(labeled[1]);
-            const m = text.match(/(?<![.\d])[+]?[\d][\d\s().\-–]{6,17}[\d]/);
-            return m ? trim(m[0]) : '';
+            const labeled = text.match(/(?:phone|mobile|tel|ph|cell|telefon|kontakt)[:\s]+([+\d\s().\-–]{6,25})/i);
+            if (labeled && isValidPhone(labeled[1])) return trim(labeled[1]);
+            // Match international phone format starting with + (e.g. +46762573273 or +46 76 257 32 73)
+            const intl = text.match(/(?<![.\d])\+[\d]{1,4}[\d\s().\-–]{5,20}[\d]/);
+            if (intl && isValidPhone(intl[0])) return trim(intl[0]);
+            const m = text.match(/(?<![.\d])[+]?[\d][\d\s().\-–]{6,18}[\d]/);
+            if (m && isValidPhone(m[0])) return trim(m[0]);
+            return '';
         }
 
         function extractLinkedIn(text) {
@@ -1976,7 +2043,7 @@ document.addEventListener('DOMContentLoaded', () => {
         fullNameInput.value = "Hamed Khomjani";
         jobTitleInput.value = "UX/UI Designer";
         emailInput.value = "eng.h.khomjani@gmail.com";
-        phoneInput.value = "0762573273";
+        phoneInput.value = "+46762573273";
         locationInput.value = "Älvsjö, Stockholm"; 
         linkedinInput.value = "linkedin.com/in/hamed-khomjani";
         portfolioInput.value = "behance.net/hamedkhomjanidesign";
